@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
+import LoginButton from './loginButton.js'
 
 import SearchBox from './SearchBox/SearchBoxInMenuBar.js'
 
@@ -24,6 +25,7 @@ export default function SimpleTabs(props) {
   return (
     <div className={classes.root}>
       <AppBar position="static">
+        <LoginButton />
         <SearchBox onChange={props.onChange}/>
         <Tabs value={value} onChange={handleChange}>
           <Tab label="Search" />

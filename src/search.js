@@ -1,3 +1,4 @@
+import { addUrl, getUrlAll } from './firebase/index.js'
 const data = {
   videos:[
     {
@@ -26,11 +27,3 @@ const data = {
 export default function search(word, k, p){
   return data.videos.filter(({name}) => name.includes(word))
 }
-
-
-
-
-
-
-
-;
