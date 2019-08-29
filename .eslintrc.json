@@ -1,0 +1,21 @@
+{
+  /* "extends": "airbnb",
+  "settings": {
+    "import/extensions": [
+      ".js",
+      ".jsx"
+    ],
+    "import/resolver": {
+      "node": {
+        "extensions": [
+          ".js",
+          ".jsx"
+        ]
+      }
+    }
+  },
+  "rules": {
+    "semi": 0,
+    "react/jsx-filename-extension": 0
+  } */
+}

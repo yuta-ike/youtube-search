@@ -18,9 +18,10 @@ export default (useStyles) => function Search(props){
       <Paper className={classes.paper}>
         <InputBase
           className={classes.input}
-          placeholder="SearchVideos"
+          placeholder="search (comming soon)"
           inputProps={{ 'aria-label': 'SearchVideos' }}
           value={word}
+          disabled
           onChange={e => handleChange(e)}
         />
         <IconButton className={classes.iconButton} aria-label="Search">

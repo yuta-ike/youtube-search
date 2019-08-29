@@ -1,74 +1,133 @@
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom'
 import Card from '@material-ui/core/Card'
-import CardHeader from '@material-ui/core/CardHeader';
-// import CardMedia from '@material-ui/core/CardMedia';
+import CardActionArea from '@material-ui/core/CardActionArea';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
-import Link from '@material-ui/core/Link';
-import IconButton from '@material-ui/core/IconButton';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import ShareIcon from '@material-ui/icons/Share';
-// import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
+import Divider from '@material-ui/core/Divider';
+
+import ShareDialog from './ShareDialog.js'
+import PlayerDialog from './PlayerDialog.js'
+import GeneralButton from './GeneralButton.js'
+
+import { addFavorite, removeFavorite } from './firebase/favorite.js'
+import { observe, stop, get } from './store.js'
+import { store } from './store.js'
 
 const useStyles = makeStyles(theme => ({
   card: {
     maxWidth: 345,
   },
-  media: {
-    height: 0,
-    paddingTop: '56.25%', // 16:9
+  title: {
+    color: 'black',
+    marginBottom: 12,
   },
-  expand: {
-    transform: 'rotate(0deg)',
-    marginLeft: 'auto',
-    transition: theme.transitions.create('transform', {
-      duration: theme.transitions.duration.shortest,
-    }),
+  iconButtonArea:{
+    paddingTop: '0.1rem',
+    paddingBottom: '0.1rem',
   },
-  expandOpen: {
-    transform: 'rotate(180deg)',
+  bottom:{
+    display:'flex',
   },
-  link: {
-
-  }
+  bottomButton:{
+    height: '3rem',
+    margin:'0 auto',
+    textAlign:'center',
+    paddingTop: '1em',
+    fontWeight: 'bold',
+  },
+  bottomButtonContainer:{
+    display: 'flex',
+  },
 }))
 
-export default function VideoCard(props){
+let initialized = false
+
+export default withRouter(function VideoCard(props){
   const classes = useStyles()
+  const includePath = props.type === "INCLUDE-PATH"
+  const data = props.data
+
+  const duration = (() => {
+    const minsec = data.duration.match(/^PT(?:(\d+)M)?(?:(\d+)S)?$/).slice(1,3)
+    return `${minsec[0] != null ? minsec[0] : 0}:${(minsec[1] != null ? '0' + minsec[1] : '00').slice(-2)}`
+  })()
+
+  const [playerOpen, setPlayerOpen] = useState(props.playerOpen)
+  const [shareDialogOpen, setShareDialogOpen] = useState(false)
+  const [favorite, setFavorite] = useState(props.favorite)
+
+  let id
+  if(!initialized){
+    initialized = true
+  }
+  useEffect(() => () => {
+    initialized = false
+    stop(id)
+  }, [])
+
+  async function handleFavorite(){
+    const response = (!favorite) ? await addFavorite(data.vid) : await removeFavorite(data.vid)
+    if(response == false) return
+    setFavorite(!favorite)
+  }
+
+  function handlePlayerOpen(){
+    setPlayerOpen(true)
+  }
+
+  function handlePlayerClose(){
+    setPlayerOpen(false)
+
+    props.history.push('/main')
+    store('MAIN_CONTENT', {type: 'MAIN_PAGE'})
+  }
+
   return (
-    <Card className={classes.card}>
-      <CardHeader
-        title={props.name}
-        action={
-          <IconButton aria-label="Settings">
-            <MoreVertIcon />
-          </IconButton>
-        }
+    <React.Fragment>
+      <Card className={classes.card}>
+        <CardContent>
+          <Typography variant="h6" color="textSecondary" component="h2" className={classes.title}>
+            {!includePath ? (
+              typeof(data.index) === 'number' ? `${data.index}. ${data.title}` : data.title
+            ):(
+              data.title
+            )}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p" className={classes.description}>
+            <strong>{` ${data.category}${data.year != null && (` (${data.year})`) || ''}${data.department != null && (' ' + data.department) || ''} ${data.day != null && (data.day + '日目') || ''}`}</strong>
+            <br/>
+            <strong>{`${data.affiliation != null && data.affiliation || ''}`}</strong>
+            {data.description}
+            <br/>
+          </Typography>
+        </CardContent>
+        <Divider />
+        <div className={classes.bottom}>
+          <CardActions disableSpacing>
+            <GeneralButton type="favorite" onClick={handleFavorite} value={favorite}/>
+            <GeneralButton type="share" onClick={() => setShareDialogOpen(true)}/>
+            <ShareDialog open={shareDialogOpen} setOpen={setShareDialogOpen} vid={data.vid}/>
+          </CardActions>
+          <Divider />
+          <CardActionArea className={classes.bottomButtonContainer} onClick={handlePlayerOpen}>
+            <Typography variant="body2" color="textSecondary" component="p" className={classes.bottomButton}>
+              {'WATCH ' + '(' + duration + ")"}
+            </Typography>
+          </CardActionArea>
+        </div>
+      </Card>
+      <PlayerDialog
+        data={data}
+        open={playerOpen}
+        handleClose={handlePlayerClose}
+        favorite={favorite}
+        handleFavorite={handleFavorite}
+        url={`https://www.youtube.com/watch?v=${data.vid}`}
+        fullscreen={props.playerOpen}
       />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary" component="p">
-          <Link href={props.link} className={classes.link}>
-            Youtubeで見る{props.link}
-          </Link>
-        </Typography>
-      </CardContent>
-      <CardActions disableSpacing>
-        <IconButton aria-label="Add to favorites">
-          <FavoriteIcon />
-        </IconButton>
-        <IconButton aria-label="Share">
-          <ShareIcon />
-        </IconButton>
-      </CardActions>
-    </Card>
+    </React.Fragment>
   )
-}
-
-
-
-
-;
+})

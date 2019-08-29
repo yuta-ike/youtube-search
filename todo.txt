@@ -1,0 +1,22 @@
+アカウント管理画面
+LINEログイン
+拡大表示にしたらいいねボタンを移動する
+playerDialogをvideo cardではなくvideo pageに紐づけるべき
+dddw2016のdepartmentバグ
+並べ替え機能
+dbのnullとその他の関係
+無限スクロールではなくページ
+ビデオクリップ共有機能
+リロードするとアクセストークン失われる
+
+novice最後の一文字
+ddd 部門
+ddgp
+
+
+[wait] 発表会をカテゴリ分け
+
+[ok]お知らせ画面
+[ok] includePathのバグ
+[ok] FAVORITのvideocardにパスを表示する
+[ok] searchfavoritevideoにlimit

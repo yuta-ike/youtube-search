@@ -1,54 +1,38 @@
-import React, { useState } from 'react';
-// import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom'
+import CssBaseline from '@material-ui/core/CssBaseline';
 
-import MenuBar from './MenuBar.js'
-import Grid from './Grid.js'
-import VideoCard from './VideoCard.js';
-import SearchBox from "./SearchBox/SearchBoxInPage.js"
-import search from './search.js'
+import Home from './Home.js'
+import Login from './Login.js'
+import ManagementPortal from './ManagementPortal.js'
+import Auth from './Auth.js'
 
-function App(){
-  const [result, setResult] = useState([]);
-
-  function handleChange(e){
-    setResult(search(e.target.value))
-  }
-
-  return(
-    <MenuBar onChange={handleChange}>
-      <SearchBox onChange={handleChange}/>
-      <Grid>
-        {
-          Array(9).fill().map((_, i) =>
-            <VideoCard
-              key={i}
-              name={result[i] && result[i].name}
-              link={result[i] && result[i].url}
-            />
-          )
-        }
-      </Grid>
-    </MenuBar>
+export default function App(props){
+  return (
+    <Router>
+      <CssBaseline />
+      <Switch>
+        <Route path="/login" component={Login} />
+        <Auth
+          normal={
+            <Switch>
+              <Route path="/:pagetype(main|account|settings|help|information|notifyportal|managementportal)" component={Home} />
+              <Redirect to="/main" />
+            </Switch>
+          }
+          master={
+            <Switch>
+              <Route path="/" component={ManagementPortal} />
+            </Switch>
+          }
+          default={
+            <Switch>
+              <Redirect to="/login" />
+            </Switch>
+          }
+        />
+      </Switch>
+    </Router>
   )
 }
-
-export default App;
-
-
-// <div className="App">
-//   <header className="App-header">
-//     <img src={logo} className="App-logo" alt="logo" />
-//     <p>
-//       Edit <code>src/App.js</code> and save to reload.
-//     </p>
-//     <a
-//       className="App-link"
-//       href="https://reactjs.org"
-//       target="_blank"
-//       rel="noopener noreferrer"
-//     >
-//       Learn React
-//     </a>
-//   </header>
-// </div>
+// <Route exact path={['/','/account','/settings', '/managementportal', '/help', '/information', '/notifyportal']} component={Home} />
