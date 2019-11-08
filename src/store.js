@@ -1,4 +1,3 @@
-import { searchVideoWithCategory, searchVideoWithIndividualData } from './firebase/videoManager.js'
 let events = {}
 
 let prevStates = {
@@ -15,37 +14,50 @@ const currState = {}
 export const store = async (name, _currState) => {
   switch(_currState.type){
     case 'FILE_READ': {
-      const {payload} = _currState
-      payload.content =
-        payload.searchType === 'GENERAL_DATA'
-          ? await searchVideoWithCategory(payload.hierarchy, payload.limit, 0)
-          : await searchVideoWithIndividualData(payload.limit)
-      payload.startIndex = payload.content.length + 1
-      prevStates[name] = _currState
+      const currPayload = _currState.payload
+      const content = {
+        ...currPayload,
+        page: 0,
+      }
+      dispatchEvent(name, content)
+      prevStates[name] = content
+      return
     }
     break
-    case 'FILE_READ_MORE': {
-      const {payload} = prevStates[name]
-      const nextContent =
-        payload.searchType === 'GENERAL_DATA'
-          ? await searchVideoWithCategory(payload.hierarchy, _currState.payload.limit, payload.startIndex)
-          : await searchVideoWithIndividualData(_currState.payload.limit, payload.startIndex)
-
-      _currState.payload.content = [...payload.content, ...nextContent]
-      _currState.payload.searchType = payload.searchType
-      _currState.payload.hierarchy = payload.hierarchy
-      _currState.payload.startIndex = _currState.payload.content.length + 1
-
-      prevStates[name] = _currState
+    case 'FILE_READ_NEXT': {
+      const prevPayload = prevStates[name]
+      const content = Object.assign(prevPayload, {page: prevPayload.page + 1})
+      dispatchEvent(name, content)
+      prevStates[name] = content
+      return
     }
     break
+    case 'FILE_READ_BACK': {
+      const prevPayload = prevStates[name]
+      const content = Object.assign(prevPayload, {page: prevPayload.page - 1})
+      dispatchEvent(name, content)
+      prevStates[name] = content
+      return
+    }
+    break
+    case 'FILE_SEARCH': {
+      dispatchEvent(name, _currState.payload)
+      return
+    }
     case 'PRIM_DATA': {
       prevStates[name].payload.content = _currState.payload.content
     }
     break
     case 'BREADCRUMBS': {}
     break
-    case 'MAIN_CONTENT': {}
+    case 'MAIN_CONTENT': {
+      // console.log(_currState.type, currState[name].type)
+      // if(_currState.type !== currState[name].type){
+        dispatchEvent(name, _currState)
+      // }
+      currState[name] = _currState
+      return
+    }
     break
     case 'PAGE_UPDATE': {
       Object.assign(prevStates[name], _currState)
@@ -60,9 +72,11 @@ export const store = async (name, _currState) => {
   currState[name] = _currState
 }
 
-const dispatchEvent = (name, state) => {
-  if(events[name] == null) return
-  events[name].forEach(callback => callback(state))
+const dispatchEvent = async (name, state) => {
+  if(events[name] == null) return;
+  await Promise.all(
+    events[name].map(callback => callback(state))
+  )
 }
 
 export const observe = (name, callback, init) => {

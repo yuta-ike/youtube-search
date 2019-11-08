@@ -6,7 +6,6 @@ import { userdb } from './core/database.js'
 //login
 export const loginGoogle = async (isLoginWithMasterAccount = false) => {
   const providerGoogle = new firebase.auth.GoogleAuthProvider()
-  console.log(isLoginWithMasterAccount)
   if(isLoginWithMasterAccount === true) providerGoogle.addScope('https://www.googleapis.com/auth/youtube')
 
   await firebase.auth().signInWithRedirect(providerGoogle)
@@ -65,7 +64,6 @@ firebase.auth().onAuthStateChanged(async _user => {
       }else{
         user.loggedIn = false
         stateChange('WAITING')
-        // logout() //これであってる？
       }
     }else{
       //新規登録
@@ -76,7 +74,9 @@ firebase.auth().onAuthStateChanged(async _user => {
         uname: _user.displayName,
       })
       console.log(user.getData())
-      userdb.doc(_user.uid).set(user.getData())
+      await userdb.doc(_user.uid).set(user.getData()).catch(e => {
+        console.error("ユーザ情報のデータベース登録に失敗しました", e)
+      })
       stateChange('WAITING')
       // logout() //これであってる？
     }

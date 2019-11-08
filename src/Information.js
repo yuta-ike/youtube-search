@@ -42,7 +42,7 @@ export default function Information(){
         現在のバージョン
       </Typography>
       <Typography variant="body1" color="textSecondary" component="p" className={classes.body}>
-        ベータ版 0.2.0
+        1.1
       </Typography>
 
       <Table className={classes.table} size="small">

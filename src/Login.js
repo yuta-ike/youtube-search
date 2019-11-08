@@ -19,6 +19,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import SimpleAppBar from './SimpleAppBar.js'
 
 import { loginGoogle, onAuthStateChanged, logout } from './firebase/auth.js'
+import user from './firebase/user.js'
 import urls from './urlManager.js'
 
 const GlobalStyle = createGlobalStyle`@import url("https://fonts.googleapis.com/css?family=Varela+Round&display=swap");`
@@ -194,7 +195,7 @@ export default function Login(props) {
                     Welcome<br/>to<br/>our service !
                   </Typography>
                   <Typography variant="body1">
-                    このサービスは、サークル内利用を目的とした招待制のウェブサービスです。招待希望の方はアカウント情報を登録しお待ちください。
+                    Youtubeにアップロードされた動画を素早く検索することができます。このサービスは完全招待制のウェブサービスです。
                   </Typography>
                 </div>
                 <div className={classes.right}>
@@ -207,8 +208,10 @@ export default function Login(props) {
                         <Typography variant="h6" className={classes.loginTopic}>
                           Waiting For Confirmation...
                         </Typography>
-                        <Typography variant="body1">
+                        <Typography variant="body1" >
                           管理者からの承認待ちです。数日経っても承認されない場合、管理者に直接ご連絡ください。
+                          <br/>
+                          あなたのユーザID：{user.uid}
                         </Typography>
                         <Button variant="outlined" className={classes.newRegisterButton} onClick={handleNewRegister}>
                           新しいアカウントで申請

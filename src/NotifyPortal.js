@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { makeStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
+import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
@@ -21,7 +22,15 @@ const useStyles = makeStyles(theme => ({
   textField: {
     width: "25rem",
     margin: theme.spacing(4),
-  }
+  },
+  title: {
+    color: 'black',
+    margin: theme.spacing(4),
+  },
+  body:{
+    color: 'black',
+    marginLeft: theme.spacing(6),
+  },
 }));
 
 export default function NotifyPortal(){
@@ -54,6 +63,9 @@ export default function NotifyPortal(){
 
   return (
     <React.Fragment>
+      <Typography variant="h5" color="textSecondary" component="h1" className={classes.title}>
+        通知ポータル
+      </Typography>
       <TextField
         id="outlined-name"
         label="通知内容"

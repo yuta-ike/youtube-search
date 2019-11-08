@@ -1,25 +1,28 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea';
+import CardMedia from '@material-ui/core/CardMedia';
 import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
+import ReactPlayer from 'react-player';
 
 import ShareDialog from './ShareDialog.js'
 import PlayerDialog from './PlayerDialog.js'
 import GeneralButton from './GeneralButton.js'
 
 import { addFavorite, removeFavorite } from './firebase/favorite.js'
-import { observe, stop, get } from './store.js'
-import { store } from './store.js'
+import { getDisplayName } from './firebase/videoManager.js'
+import { store, stop } from './store.js'
+import { get as getThumbnail } from './firebase/thumbnail.js'
+
+import user from './firebase/user.js'
+import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
-  card: {
-    maxWidth: 345,
-  },
   title: {
     color: 'black',
     marginBottom: 12,
@@ -45,7 +48,7 @@ const useStyles = makeStyles(theme => ({
 
 let initialized = false
 
-export default withRouter(function VideoCard(props){
+export default function VideoCard(props){
   const classes = useStyles()
   const includePath = props.type === "INCLUDE-PATH"
   const data = props.data
@@ -85,9 +88,16 @@ export default withRouter(function VideoCard(props){
     store('MAIN_CONTENT', {type: 'MAIN_PAGE'})
   }
 
+  const loadImagePath = `${process.env.PUBLIC_URL}/load_image.png`
+  const [thumbnailSrc, setThumbnailSrc] = useState(loadImagePath)
+  getThumbnail(data.vid).then(setThumbnailSrc)
+
   return (
     <React.Fragment>
       <Card className={classes.card}>
+        <CardMedia>
+          <img src={thumbnailSrc}/>
+        </CardMedia>
         <CardContent>
           <Typography variant="h6" color="textSecondary" component="h2" className={classes.title}>
             {!includePath ? (
@@ -96,11 +106,11 @@ export default withRouter(function VideoCard(props){
               data.title
             )}
           </Typography>
-          <Typography variant="body2" color="textSecondary" component="p" className={classes.description}>
-            <strong>{` ${data.category}${data.year != null && (` (${data.year})`) || ''}${data.department != null && (' ' + data.department) || ''} ${data.day != null && (data.day + '日目') || ''}`}</strong>
+          <Typography variant="body2" color="textSecondary" component="p" className={classes.description} style={{whiteSpace: 'pre-line'}}>
+            <strong>{` ${getDisplayName(data.category)}${data.year != null && (` (${data.year})`) || ''}${data.department != null && (' ' + data.department) || ''} ${data.day != null && (data.day + '日目') || ''}`}</strong>
             <br/>
-            <strong>{`${data.affiliation != null && data.affiliation || ''}`}</strong>
-            {data.description}
+            <strong>{`${data.affiliation != null && data.affiliation || ''}\n`}</strong>
+            {data.description.replace(/\\n/g, '\n')}
             <br/>
           </Typography>
         </CardContent>
@@ -130,4 +140,4 @@ export default withRouter(function VideoCard(props){
       />
     </React.Fragment>
   )
-})
+}

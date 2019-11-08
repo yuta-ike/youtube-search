@@ -98,7 +98,7 @@ export default withRouter(function ExtensionButton(props){
         {
           hasAdminAuth() ? <Divider /> : null
         }
-        <MenuItem className={classes.menuItems} onClick={e => handleMenu('SETTINGS',e)}>Settings</MenuItem>
+        <MenuItem className={classes.menuItems} onClick={e => handleMenu('SETTINGS',e)}>Account</MenuItem>
         <MenuItem className={classes.menuItems} onClick={e => handleMenu('HELP',e)}>Help</MenuItem>
         <MenuItem className={classes.menuItems} onClick={e => handleMenu('INFORMATION',e)}>Infomation</MenuItem>
         <Divider />

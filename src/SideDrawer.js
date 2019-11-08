@@ -4,11 +4,10 @@ import Drawer from '@material-ui/core/Drawer';
 import Divider from '@material-ui/core/Divider';
 
 import FolderHierarchy from './FolderHierarchy.js'
-import mainFolderStructure from './mainFolderStructure.js'
+import mainFolderStructurePromise from './mainFolderStructure.js'
 import subFolderStructure from './subFolderStructure.js'
 import { store } from './store.js'
 import { pageData } from './action.js'
-
 const drawerWidth = 250
 
 const useStyles = makeStyles(theme => ({
@@ -26,7 +25,10 @@ const useStyles = makeStyles(theme => ({
     display: 'none',
   },
   drawer: {
-    width: drawerWidth,
+    [theme.breakpoints.up('sm')]:{
+      width: drawerWidth,
+    },
+    width: "100%",
     flexShrink: 0,
   },
   drawerHeader: {
@@ -34,23 +36,10 @@ const useStyles = makeStyles(theme => ({
     ...theme.mixins.toolbar,
   },
   drawerPaper: {
-    width: drawerWidth,
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(1),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: -drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
+    [theme.breakpoints.up('sm')]:{
+      width: drawerWidth,
+    },
+    width: "100%",
   },
   title: {
     flexGrow: 1,
@@ -65,6 +54,9 @@ const useStyles = makeStyles(theme => ({
 export default function SideDrawer(props){
   const classes = useStyles();
   const { open } = props
+  const [mainFolderStructure, setMainFolderStructure] = useState([])
+  mainFolderStructurePromise.then(value => setMainFolderStructure(value))
+  const [selected, setSelected] = useState(null)
 
   return (
     <Drawer
@@ -80,18 +72,20 @@ export default function SideDrawer(props){
         folderStructure={subFolderStructure}
         onClickFile={(_, hierarchy) => {
           props.handleHierarchyList(hierarchy)
-          store('PAGE_UPDATE', pageData(hierarchy, 24))
+          store('PAGE_DATA', pageData(hierarchy, 'SUB_FOLDER'))
           window.scrollTo(0, 0)
         }}
+        properties={{selected, setSelected}}
       />
       <Divider />
       <FolderHierarchy
         folderStructure={mainFolderStructure}
         onClickFile={(_, hierarchy) => {
           props.handleHierarchyList(hierarchy)
-          store('PAGE_UPDATE', pageData(hierarchy, 24))
+          store('PAGE_DATA', pageData(hierarchy, 'MAIN_FOLDER'))
           window.scrollTo(0, 0)
         }}
+        properties={{selected, setSelected}}
       />
     </Drawer>
   )

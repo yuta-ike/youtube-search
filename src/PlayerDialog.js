@@ -15,6 +15,7 @@ import IconButton from '@material-ui/core/IconButton';
 
 import GeneralButton from './GeneralButton.js'
 import ShareDialog from './ShareDialog.js'
+import Slider from './Slider.js';
 
 const styles = theme => ({
   root: {
@@ -58,6 +59,10 @@ const useStyles = makeStyles(theme => ({
   contentText:{
     flexGrow: 1,
   },
+  slider:{
+    marginLeft: theme.spacing(2),
+    marginRight: theme.spacing(2),
+  },
 }));
 
 export default withRouter(function PlayerDialog(props) {
@@ -87,8 +92,12 @@ export default withRouter(function PlayerDialog(props) {
     setSuccess(false)
   }
 
-  const [shareDialogOpen, setShareDialogOpen] = useState(false)
+  const [progress, setProgress] = useState(0)
+  function handleProgress(x){
+    setProgress(x.playedSeconds)
+  }
 
+  const [shareDialogOpen, setShareDialogOpen] = useState(false)
   return (
       <Dialog
         fullWidth
@@ -123,6 +132,7 @@ export default withRouter(function PlayerDialog(props) {
                   }
                 }
               }}
+              onProgress={handleProgress}
             /> :
             <DialogContentText className={classes.button}>
               Youtubeにログインしていないため動画を再生できません。
@@ -134,12 +144,15 @@ export default withRouter(function PlayerDialog(props) {
         </DialogContent>
         {!fullscreen &&
           <DialogActions disableSpacing>
+            {/*<Slider progress={progress}/>*/}
             <GeneralButton type="favorite" onClick={handleFavorite} value={favorite}/>
             <GeneralButton type="share" onClick={() => setShareDialogOpen(true)}/>
-
             <ShareDialog open={shareDialogOpen} setOpen={setShareDialogOpen} vid={data.vid}/>
           </DialogActions>
         }
       </Dialog>
   )
 })
+
+//getAriaValueText={valuetext}
+//marks={marks}

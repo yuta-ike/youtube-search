@@ -21,7 +21,7 @@ export default function _Grid(props) {
       <React.Fragment>
         {
           Array(props.col).fill().map((_, i) =>
-            <Grid item xs={12/props.col} key={i}>
+            <Grid item xs={12} sm={6} md={3} key={i}>
               {props.children[_props.rowId * props.col + i]}
             </Grid>
           )
@@ -34,21 +34,10 @@ export default function _Grid(props) {
     <div className={classes.root} style={{ padding: 20 }}>
       <Grid container spacing={3}>
         {
-          Array(props.row).fill().map((_, i, arr) => (
-            arr.length - i !== props.insertAtFromLast ? (
-              <Grid container spacing={3} style={{ padding: 20 }} key={i}>
-                <RowGrid rowId={i}/>
-              </Grid>
-            ):(
-              <React.Fragment>
-                <div key={i}>
-                  <Grid container spacing={3} style={{ padding: 20 }} key={i}>
-                    <RowGrid rowId={i}/>
-                  </Grid>
-                </div>
-                {props.insertComponent}
-              </React.Fragment>
-            )
+          Array(props.row).fill().map((_, i) => (
+            <Grid container spacing={2} style={{ padding: 5 }} key={i}>
+              <RowGrid rowId={i}/>
+            </Grid>
           ))
         }
       </Grid>

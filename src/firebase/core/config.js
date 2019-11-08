@@ -1,14 +1,14 @@
 // Your web app's Firebase configuration
 const config = {
-  apiKey: "AIzaSyDdo3kab5lTLDrWJvVe4vlTr13u4XJHhQ0",
-  authDomain: "watcher-244514.firebaseapp.com",
-  databaseURL: "https://watcher-244514.firebaseio.com",
-  projectId: "youtubewatcher-244514",
-  storageBucket: "youtubewatcher-244514.appspot.com",
-  messagingSenderId: "594302830408",
-  appId: "1:594302830408:web:7257b06d028bdbf7",
+  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
+  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
+  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET_URL,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  appId: process.env.REACT_APP_FIREBASE_APP_ID,
 
-  clientId: '594302830408-tbe17bbpolh16asnnt8f0f8j574oc66s.apps.googleusercontent.com',
+  clientId: process.env.REACT_APP_FIREBSAE_CLIENT_ID,
   scopes:['https://www.googleapis.com/auth/youtube.upload'],
   discoveryDocs: ['https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest'],
 }

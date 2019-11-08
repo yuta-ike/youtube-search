@@ -1,17 +1,17 @@
 import FolderSpecialOpenIcon from '@material-ui/icons/FolderSpecialOutlined'
 import HistoryIcon from '@material-ui/icons/History'
 
-export default {
-  Favorite:{
-    dbname:"favorite",
-    dbtype:"category",
+export default [
+  {
+    displayName:"Favorite",
+    restriction:{category:"favorite",},
     icon:FolderSpecialOpenIcon,
     children:null,
   },
-  WatchHistory:{
-    dbname:"history",
-    dbtype:"category",
+  {
+    displayName:"WatchHistory（未実装）",
+    restriction:{category:"history",},
     icon:HistoryIcon,
     children:null,
   },
-}
+]

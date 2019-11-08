@@ -1,36 +1,39 @@
-export const pageData = (hierarchy, limit) => {
-  if(hierarchy.category == "favorite" || hierarchy.category == "history"){
+export const pageData = (conditions, folderType) => {
+  if(folderType === 'SUB_FOLDER'){
     return {
       type: 'FILE_READ',
       payload:{
-        searchType: "INDIVIDUAL_DATA",
+        searchType: "INDIVIDUAL-DATA",
         videocardType:"INCLUDE-PATH",
-        hierarchy,
-        limit,
+        conditions,
       }
     }
-  }else{
+  }else if(folderType === 'MAIN_FOLDER'){
     return {
       type:'FILE_READ',
       payload:{
-        searchType: "GENERAL_DATA",
+        searchType: "GENERAL-DATA",
         videocardType:"DEFAULT",
-        hierarchy,
-        limit,
+        conditions,
       }
     }
   }
 }
 
-export const morePageData = async (limit) => {
-  console.log(limit)
-  return {
-    type: 'FILE_READ_MORE',
-    payload:{
-      limit,
-    }
-  }
-}
+export const pageDataNext = () => ({
+  type: 'FILE_READ_NEXT',
+  payload: {},
+})
+
+export const pageDataBack = () => ({
+  type: 'FILE_READ_BACK',
+  payload: {},
+})
+
+export const pageDataSearch = query => ({
+  type: 'FILE_SEARCH',
+  payload: {query},
+})
 
 export const primData = value => {
   return {

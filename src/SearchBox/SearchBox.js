@@ -10,7 +10,7 @@ export default (useStyles) => function Search(props){
 
   function handleChange(e){
     setWord(e.target.value)
-    props.onChange(e)
+    props.onChange(e.target.value)
   }
 
   return (
@@ -18,10 +18,9 @@ export default (useStyles) => function Search(props){
       <Paper className={classes.paper}>
         <InputBase
           className={classes.input}
-          placeholder="search (comming soon)"
+          placeholder="search videos"
           inputProps={{ 'aria-label': 'SearchVideos' }}
           value={word}
-          disabled
           onChange={e => handleChange(e)}
         />
         <IconButton className={classes.iconButton} aria-label="Search">

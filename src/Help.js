@@ -42,45 +42,48 @@ export default function ManagementPortal(){
         動画を視聴するには
       </Typography>
       <Typography variant="body1" color="textSecondary" component="p" className={classes.body}>
-        動画は自動的にフォルダ分けされています。画面左側のメニューから見たいファイルを探してください。
-        ファイルをクリック（タップ）すると動画一覧が表示されます。
-        「Watch」をクリック（タップ）することで動画を視聴できます。
+        動画は自動的にフォルダ分けされています。画面左側のメニューから見たいフォルダを探してください。
+        フォルダをクリックするとそのフォルダに含まれる動画が一覧表示されます。
+        動画一覧から、みたい動画の「Watch」ボタンをクリックすることで動画を視聴することができます。
       </Typography>
 
       <Typography variant="h5" color="textSecondary" component="h2" className={classes.title}>
         ユーザー認証について
       </Typography>
       <Typography variant="body1" color="textSecondary" component="p" className={classes.body}>
-        ユーザー認証にはメールアドレスに加え、Googleアカウント(推奨)、Twitterアカウント、LINEアカウント(推奨)が利用可能です（現在はGoogleアカウントにのみ対応）。
-        登録には管理者の許可が必要となりますので、事前に管理者に連絡を取ってください。
+        ユーザー認証には現在Googleアカウントのみ使用することができます。利用開始には管理者による承認が必要となります。
       </Typography>
 
       <Typography variant="h5" color="textSecondary" component="h2" className={classes.title}>
         検索機能
       </Typography>
       <Typography variant="body1" color="textSecondary" component="p" className={classes.body}>
-        現在準備中です
+        検索ボックスにチーム名や大会名、部門名、所属団体名、日付などを入力することで検索することができます。
+        複数のキーワードを指定する場合はスペースで区切ってください。
+        日付は"2019-9-20"や"2019/9/20"のようにハイフンやスラッシュで区切ってください。
+        より詳しい検索を実装中です。
       </Typography>
 
       <Typography variant="h5" color="textSecondary" component="h2" className={classes.title}>
         お気に入り機能
       </Typography>
       <Typography variant="body1" color="textSecondary" component="p" className={classes.body}>
-        ハートマークをクリック（またはタップ）することで動画をお気に入り登録することができます。お気に入り登録した動画は画面左側のメニュー内にある「Favorite」ファイルからまとめて見ることができます
+        ハートマークをクリック（またはタップ）することで動画をお気に入り登録することができます。
+        お気に入り登録した動画は画面左側のメニュー内にある「Favorite」ファイルからまとめて見ることができます。
       </Typography>
 
       <Typography variant="h5" color="textSecondary" component="h2" className={classes.title}>
         共有機能
       </Typography>
       <Typography variant="body1" color="textSecondary" component="p" className={classes.body}>
-        リンクマークをクリック（またはタップ）することで動画をシェアすることができます。現在はURLのコピーのみ対応しています
+        リンクマークをクリック（またはタップ）することで動画をシェアすることができます。現在はURLのコピーのみ対応しています。
       </Typography>
 
       <Typography variant="h5" color="textSecondary" component="h2" className={classes.title}>
-        閲覧履歴
+        閲覧履歴（未実装）
       </Typography>
       <Typography variant="body1" color="textSecondary" component="p" className={classes.body}>
-        閲覧履歴を見るには、画面左側のメニュー内にある「Watch History」ファイルからまとめて見ることができます
+        閲覧履歴を見るには、画面左側のメニュー内にある「Watch History」ファイルからまとめて見ることができます。現在調整中です。
       </Typography>
 
       <Typography variant="h4" color="textSecondary" component="h1" className={classes.title}>
@@ -97,19 +100,6 @@ export default function ManagementPortal(){
         <ExpansionPanelDetails>
           <Typography className={classes.detail}>
             A. 画面左上のハンバーガーアイコン（横三本線）をクリックすることでメニューの表示/非表示を切り替えることができます
-          </Typography>
-        </ExpansionPanelDetails>
-      </ExpansionPanel>
-      <ExpansionPanel expanded={expanded === 'panel1'} onChange={handleChange('panel2')} className={classes.expansionPanel}>
-        <ExpansionPanelSummary
-          aria-controls="panel1bh-content"
-          id="panel1bh-header"
-        >
-          <Typography className={classes.heading}>Q. 検索ボックスが使えない</Typography>
-        </ExpansionPanelSummary>
-        <ExpansionPanelDetails>
-          <Typography className={classes.detail}>
-            A. 検索機能は現在準備中です。
           </Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>

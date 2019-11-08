@@ -6,6 +6,8 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
+import useScrollTrigger from '@material-ui/core/useScrollTrigger';
+import Slide from '@material-ui/core/Slide';
 
 import { sendMail } from './firebase/functions'
 
@@ -31,6 +33,17 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+function HideOnScroll(props) {
+  const { children } = props;
+  const trigger = useScrollTrigger({ target: window });
+
+  return (
+    <Slide appear={false} direction="down" in={!trigger}>
+      {children}
+    </Slide>
+  );
+}
+
 export default function MyAppBar(props){
   const classes = useStyles()
   const { open, setOpen } = props
@@ -40,25 +53,27 @@ export default function MyAppBar(props){
   }
 
   return (
-    <AppBar
-      position="fixed"
-      className={classes.appBar}
-    >
-      <Toolbar>
-        <IconButton
-          edge="start"
-          className={clsx(classes.menuButton, open && classes.hide)}
-          color="inherit"
-          aria-label="Menu"
-          onClick={handleDrawerOpen}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" className={classes.title}>
-          {'U-Search (beta)'}
-        </Typography>
-        {props.children}
-      </Toolbar>
-    </AppBar>
+    <HideOnScroll>
+      <AppBar
+        position="fixed"
+        className={classes.appBar}
+      >
+        <Toolbar>
+          <IconButton
+            edge="start"
+            className={clsx(classes.menuButton, open && classes.hide)}
+            color="inherit"
+            aria-label="Menu"
+            onClick={handleDrawerOpen}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            {'U-Search (beta)'}
+          </Typography>
+          {props.children}
+        </Toolbar>
+      </AppBar>
+    </HideOnScroll>
   )
 }

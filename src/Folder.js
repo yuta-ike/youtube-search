@@ -11,7 +11,14 @@ import Collapse from '@material-ui/core/Collapse';
 
 const useStyles = makeStyles(theme => ({
   nested: {
-    paddingLeft: theme.spacing(2),
+    marginLeft: theme.spacing(2),
+  },
+  folder: {
+    // borderLeft: `solid rgba(0,0,0,0) 6px`,
+  },
+  selectedFolder: {
+    // borderLeft: `solid ${theme.palette.primary.light} 6px`,
+    // backgroundColor: theme.palette.action.selected,
   },
 }))
 
@@ -27,6 +34,7 @@ export default function Folder(props){
   function handleFileClick(e){
       setOpen(!open)
       if(props.onClick != null) props.onClick()
+      // props.setSelected(props.name)
   }
 
   if(props.children != null){
@@ -52,7 +60,7 @@ export default function Folder(props){
     )
   }else{
     return (
-      <ListItem button key={props.name} onClick={handleFileClick}>
+      <ListItem className={props.selected == this ? classes.selectedFolder : classes.folder} button key={props.name} onClick={handleFileClick}>
         <ListItemIcon>
           {props.icon ? <props.icon /> : <FolderOpenIcon />}
         </ListItemIcon>

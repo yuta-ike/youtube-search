@@ -14,9 +14,9 @@ export const getInfo = async (limit = null) => {
   return result
 }
 
-export const notify = message => {
+export const notify = async message => {
   console.log(message, user.accountTypeInJapanese())
-  infodb.add({
+  await infodb.add({
     generator: user.accountTypeInJapanese(),
     message,
     date: firebase.firestore.FieldValue.serverTimestamp()

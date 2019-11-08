@@ -1,5 +1,4 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import 'firebase/firestore'
 import firebaseApp from './index.js'
 
 // firestore
@@ -9,3 +8,4 @@ export const videodb = firebaseDb.collection('videos')
 export const userdb = firebaseDb.collection('user')
 export const configdb = firebaseDb.collection('config')
 export const infodb = firebaseDb.collection('info')
+export const foldersdb = firebaseDb.collection('folders')

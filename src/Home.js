@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
@@ -13,8 +13,10 @@ import ManagementPortal from './ManagementPortal.js'
 import NotifyPortal from './NotifyPortal.js'
 import Help from './Help.js'
 import Information from './Information.js'
+import TestButton from './TestButton.js'
 
 import { store, observe } from './store.js'
+import { pageDataSearch } from './action.js'
 import { onAuthStateChanged, getName } from './firebase/auth.js'
 
 const drawerWidth = 250
@@ -31,7 +33,10 @@ const useStyles = makeStyles(theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginLeft: -drawerWidth,
+    [theme.breakpoints.up('sm')]:{
+      marginLeft: -drawerWidth,
+    },
+    marginLeft: "-100%",
   },
   contentShift: {
     transition: theme.transitions.create('margin', {
@@ -88,10 +93,20 @@ export default function Home(props) {
     }
   })
 
+  let timer
+  async function handleSearchBox(word){
+    clearTimeout(timer)
+    if(word !== ''){
+      timer = setTimeout(() => {
+        store('PAGE_DATA_SEARCH', pageDataSearch(word))
+      }, 500)
+    }
+  }
+
   return (
     <div className={classes.root}>
       <AppBar open={open} setOpen={setOpen}>
-        <SearchBox onChange={()=>{}}/>
+        <SearchBox onChange={handleSearchBox}/>
         <NotificationButton />
         <ExtensionButton />
         <Typography className={classes.uname} variant="body1">

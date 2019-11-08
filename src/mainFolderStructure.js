@@ -1,547 +1,960 @@
-export default {
-  "ACCEL PARTY": {
-    dbname:"accelparty",
-    dbtype:"category",
-    children:{
-      2016:{dbname:2016,dbtype:"year",children:null},
-      2017:{dbname:2017,dbtype:"year",children:null},
-      2019:{dbname:2019,dbtype:"year",children:null},
-    }
-  },
-  wldd:{
-    dbname: "wldd",
-    dbtype:"category",
-    children:{
-      2017:{
-        dbname:2017,
-        dbtype:"year",
-        children:{
-          OPEN:{
-            dbname:"OPEN",
-            dbtype:"department",
-            children:null,
-          },
-          novice:{
-            dbname:"NOVICE",
-            dbtype:"department",
-            children:null,
-          },
-          advance:{
-            dbname:"ADVANCE",
-            dbtype:"department",
-            children:null,
-          },
-        }
-      },
-      2016:{
-        dbname:2016,
-        dbtype:"year",
-        children:{
-          OPEN:{
-            dbname:"OPEN",
-            dbtype:"department",
-            children:null,
-          },
-        }
-      },
-    }
-  },
-  ddgp:{
-    dbname: 'ddgp',
-    dbtype: 'category',
-    children: {
-      2019: {
-        dbname:2019,
-        dbtype:"year",
-        children:{
-          OPEN:{
-            dbname:"OPEN",
-            dbtype:"department",
-            children:null,
-          },
-          一回生:{
-            dbname:"一回生",
-            dbtype:"department",
-            children:null,
-          },
-          一般:{
-            dbname:"一般",
-            dbtype:"department",
-            children:null,
-          },
-          CHALLENGE:{
-            dbname:'CHALLENGE',
-            dbtype:'department',
-            children:null,
-          },
-          NOVICE:{
-            dbname:'NOVICE',
-            dbtype:'department',
-            children:null,
-          },
-          ADVANCE:{
-            dbname:'ADVANCE',
-            dbtype:'department',
-            children:null,
-          },
-          その他:{
-            dbname:'その他', //null??
-            dbtype:'department',
-            children:null,
-          },
-        }
-      }
-    }
+import { getStructures, updateStructures } from './firebase/folderManager.js'
 
-  },
-  ddcj:{
-    dbname: "ddcj",
-    dbtype:"category",
-    children:{
-      2016:{
-        dbname:2016,
-        dbtype:"year",
-        children:{
-          OPEN:{
-            dbname:"OPEN",
-            dbtype:"department",
-            children:null,
-          },
-          "U-19":{
-            dbname:"U-19",
-            dbtype:"department",
-            children:null,
-          },
-          JUNIOR:{
-            dbname:"JUNIOR",
-            dbtype:"department",
-            children:null,
-          },
-        }
-      },
-      2017:{
-        dbname:2017,
-        dbtype:"year",
-        children:{
-          OPEN:{
-            dbname:"OPEN",
-            dbtype:"department",
-            children:null,
-          },
-        }
-      },
-      2018:{
-        dbname:2018,
-        dbtype:"year",
-        children:{
-          OPEN:{
-            dbname:"OPEN",
-            dbtype:"department",
-            children:null,
-          },
-        }
-      },
-      2019:{
-        dbname:2019,
-        dbtype:"year",
-        children:{
-          OPEN1:{
-            dbname:"OPEN1",
-            dbtype:"department",
-            children:null,
-          },
-          OPEN2:{
-            dbname:"OPEN2",
-            dbtype:"department",
-            children:null,
-          },
-          "U-19":{
-            dbname:"U-19",
-            dbtype:"department",
-            children:null,
-          },
-          JUNIOR:{
-            dbname:"JUNIOR",
-            dbtype:"department",
-            children:null,
-          },
-          MTTR:{
-            dbname:"MTTR",
-            dbtype:"department",
-            children:null,
-          },
-          FINAL:{
-            dbname:"FINAL",
-            dbtype:"department",
-            children:null,
-          },
-        }
-      },
-    }
-  },
-  dddw:{
-    dbname: "ddd",
-    dbtype:"category",
-    children:{
-      2017:{
-        dbname:2017,
-        dbtype:"year",
-        children:{
-          OPEN:{
-            dbname:"OPEN",
-            dbtype:"department",
-            children:null,
-          },
-          "一般":{
-            dbname:"一般",
-            dbtype:"department",
-            children:null,
-          },
-          novice:{
-            dbname:"NOVICE",
-            dbtype:"department",
-            children:null,
-          },
-          advance:{
-            dbname:"ADVANCE",
-            dbtype:"department",
-            children:null,
-          },
-        }
-      },
-      2016:{
-        dbname:2016,
-        dbtype:"year",
-        children:{
-          OPEN:{
-            dbname:"OPEN",
-            dbtype:"department",
-            children:null,
-          },
-          "一般":{
-            dbname:"一般",
-            dbtype:"department",
-            children:null,
-          },
-          novice:{
-            dbname:"NOVICE",
-            dbtype:"department",
-            children:null,
-          },
-          advance:{
-            dbname:"ADVANCE",
-            dbtype:"department",
-            children:null,
-          },
-        }
-      },
-    }
-  },
-  NF:{
-    dbname: "nf",
-    dbtype:"category",
-    children:{
-      2016:{
-        dbname:2016,
-        dbtype:"year",
-        children:{
-          "1日目":{
-            dbname: 1,
-            dbtype: "day",
-            children:null,
-          },
-          "2日目":{
-            dbname: 2,
-            dbtype: "day",
-            children:null,
-          },
-          "3日目":{
-            dbname: 3,
-            dbtype: "day",
-            children:null,
-          },
-          "4日目":{
-            dbname: 4,
-            dbtype: "day",
-            children:null,
-          },
-        },
-      },
-      2017:{
-        dbname:2017,
-        dbtype:"year",
-        children:{
-          ダブルダッチ:{
-            dbname:"ダブルダッチ",
-            dbtype:"department",
-            children:{
-              "1日目":{
-                dbname: 1,
-                dbtype: "day",
-                children:null,
-              },
-              "2日目":{
-                dbname: 2,
-                dbtype: "day",
-                children:null,
-              },
-              "3日目":{
-                dbname: 3,
-                dbtype: "day",
-                children:null,
-              },
-              "4日目":{
-                dbname: 4,
-                dbtype: "day",
-                children:null,
-              },
-            }
-          },
-          単縄:{
-            dbname:"単縄",
-            dbtype:"department",
-            children:{
-              "1日目":{
-                dbname: 1,
-                dbtype: "day",
-                children:null,
-              },
-              "2日目":{
-                dbname: 2,
-                dbtype: "day",
-                children:null,
-              },
-              "3日目":{
-                dbname: 3,
-                dbtype: "day",
-                children:null,
-              },
-              "4日目":{
-                dbname: 4,
-                dbtype: "day",
-                children:null,
-              },
-            }
-          },
-          Finale:{
-            dbname: "Finale",
-            dbtype: "department",
-            children:null,
-          },
-          ステージ:{
-            dbname: "ステージ",
-            dbtype: "department",
-            children:null,
-          },
-        },
-      },
-      2018:{
-        dbname:2018,
-        dbtype:"year",
-        children:{
-          ダブルダッチ:{
-            dbname:"ダブルダッチ",
-            dbtype:"department",
-            children:{
-              "1日目":{
-                dbname: 1,
-                dbtype: "day",
-                children:null,
-              },
-              "3日目":{
-                dbname: 3,
-                dbtype: "day",
-                children:null,
-              },
-              "4日目":{
-                dbname: 4,
-                dbtype: "day",
-                children:null,
-              },
-            }
-          },
-          単縄:{
-            dbname:"単縄",
-            dbtype:"department",
-            children:{
-              "1日目":{
-                dbname: 1,
-                dbtype: "day",
-                children:null,
-              },
-              "2日目":{
-                dbname: 2,
-                dbtype: "day",
-                children:null,
-              },
-              "3日目":{
-                dbname: 3,
-                dbtype: "day",
-                children:null,
-              },
-              "4日目":{
-                dbname: 4,
-                dbtype: "day",
-                children:null,
-              },
-            }
-          },
-          Finale:{
-            dbname: "Finale",
-            dbtype: "department",
-            children:null,
-          },
-          ステージ:{
-            dbname: "ステージ",
-            dbtype: "department",
-            children:null,
-          },
-          SpecialMovie:{
-            dbname: "Special Movie",
-            dbtype: "department",
-            children: null,
-          },
-        }
-      }
-    },
-  },
-  JC:{
-    dbname:"jc",
-    dbtype:"category",
-    children:{
-      "個人フリースタイル":{
-        dbname:"13JC 個人戦フリースタイル",
-        dbtype:"department",
-        children:null,
-      },
-      "団体フリースタイル":{
-        dbname:"13JC 団体戦フリースタイル",
-        dbtype:"department",
-        children:null,
-      },
-    }
-  },
-  "WorldJumpRope":{
-    dbname:"worldjumprope",
-    dbtype:"category",
-    children:{
-      "シングルフリースタイル":{
-        dbname:"シングルフリースタイル",
-        dbtype:"department",
-        children:null,
-      },
-      "スピード":{
-        dbname:"スピード",
-        dbtype:"department",
-        children:null,
-      },
-      "ペアフリースタイル":{
-        dbname:"ペアフリースタイル",
-        dbtype:"department",
-        children:null,
-      },
-    }
-  },
-  GOLD:{
-    dbname:"gold",
-    dbtype:"category",
-    children: {
-      2017:{
-        dbname:2017,
-        dbtype: "year",
-        children:{
-          Battle:{
-            dbname:"BATTLE",
-            dbtype:"department",
-            children:null,
-          },
-          "ShowCase":{
-            dbname:"SHOW CASE",
-            dbtype:"department",
-            children:null,
-          },
-          "その他":{
-            dbname:"その他",
-            dbtype:"department",
-            children:null,
-          },
-        },
-      }
-    }
-  },
-  ルネ屋台:{
-    dbname:"ルネ屋台",
-    dbtype:"category",
-    children:{
-      2019:{
-        dbname:2019,
-        dbtype: "year",
-        children:null
-      }
-    },
-  },
-  "MTTR ONE\'S":{
-    dbname: "mttrones",
-    dbtype:"category",
-    children:{
-      2018:{
-        dbname:2018,
-        dbtype: "year",
-        children:null,
-      },
-      2019:{
-        dbname:2019,
-        dbtype: "year",
-        children:null,
-      },
-    }
-  },
-  舞鶴合宿:{
-    dbname:"舞鶴合宿",
-    dbtype:"category",
-    children:{
-      2019:{
-        dbname:2019,
-        dbtype: "year",
-        children:null,
-      }
-    },
-  },
-  オーキャン:{
-    dbname:"opencampus",
-    dbtype:"category",
-    children:{
-      2019:{
-        dbname:2019,
-        dbtype: "year",
-        children:null,
-      }
-    },
-  },
-  DDS:{
-    dbname:"dds",
-    dbtype:"category",
-    children:null,
-  },
-  五月祭:{
-    dbname:"五月祭",
-    dbtype:"category",
-    children:null,
-  },
-  発表会:{
-    dbname:"発表会",
-    dbtype:"category",
-    children:null,
-  },
-  その他:{
-    dbname:"その他",
-    dbtype:"category",
-    children:{
-      フリーロープ:{
-        dbname: 'フリーロープ',
-        dbtype: 'department',
-        children:null,
-      }
-    },
-  },
+export default getStructures()
+
+const time = (date) => {
+  date.setHours(0,0,0,0)
+  return date
 }
+
+const folders = [
+  {
+    displayName: "大会その1",
+    restriction: {},
+    children: [
+      {
+        displayName:"We Love Double Dutch",
+        restriction: {category:"wldd",},
+        children: [
+          {
+            displayName:"2017",
+            restriction: {year:2017,},
+            children: [
+              {
+                displayName:"OPEN",
+                restriction: {department:"OPEN",},
+                children:null,
+              },
+              {
+                displayName:"NOVICE",
+                restriction: {department:"NOVICE",},
+                children:null,
+              },
+              {
+                displayName:"ADVANCE",
+                restriction: {department:"ADVANCE",},
+                children:null,
+              },
+            ]
+          },
+          {
+            displayName:"2016",
+            restriction: {year:2016,},
+            children: [
+              {
+                displayName:"OPEN",
+                restriction: {department:"OPEN",},
+                children:null,
+              },
+            ]
+          },
+        ]
+      },
+      {
+        displayName:"Double Dutch Grand Prix",
+        restriction: {category:'ddgp',},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children: [
+              {
+                displayName:"OPEN1",
+                restriction: {department:"OPEN1",},
+                children:null,
+              },
+              {
+                displayName:"OPEN2",
+                restriction: {department:"OPEN2",},
+                children:null,
+              },
+              {
+                displayName:"一回生",
+                restriction: {department:"一回生",},
+                children:null,
+              },
+              {
+                displayName:"一般",
+                restriction: {department:"一般",},
+                children:null,
+              },
+              {
+                displayName:"CHALLENGE",
+                restriction: {department:'CHALLENGE',},
+                children:null,
+              },
+              {
+                displayName:"NOVICE",
+                restriction: {department:'NOVICE',},
+                children:null,
+              },
+              {
+                displayName:"ADVANCED",
+                restriction: {department:'ADVANCED',},
+                children:null,
+              },
+              {
+                displayName:"その他",
+                restriction: {department:"その他",},
+                children:null,
+              },
+            ]
+          }
+        ]
+      },
+      {
+        displayName:"Double Dutch Delight West",
+        restriction: {category:"ddd",},
+        children: [
+          {
+            displayName: "2019",
+            restriction: {year:2019,},
+            children: [
+              {
+                displayName: "OPEN",
+                restriction: {department:"OPEN",},
+                children:null,
+              },
+              {
+                displayName: "一般",
+                restriction: {department:"一般",},
+                children:null,
+              },
+              {
+                displayName:"NOVICE",
+                restriction: {department:"NOVICE",},
+                children:null,
+              },
+              {
+                displayName:"ADVANCED",
+                restriction: {department:"ADVANCED",},
+                children:null,
+              },
+              {
+                displayName:"その他",
+                restriction: {department:"その他",},
+                children:null,
+              },
+            ]
+          },
+          {
+            displayName: "2017",
+            restriction: {year:2017,},
+            children: [
+              {
+                displayName: "OPEN",
+                restriction: {department:"OPEN",},
+                children:null,
+              },
+              {
+                displayName: "一般",
+                restriction: {department:"一般",},
+                children:null,
+              },
+              {
+                displayName:"NOVICE",
+                restriction: {department:"NOVICE",},
+                children:null,
+              },
+              {
+                displayName:"ADVANCE",
+                restriction: {department:"ADVANCE",},
+                children:null,
+              },
+            ]
+          },
+          {
+            displayName:"2016",
+            restriction: {year:2016,},
+            children: [
+              {
+                displayName:"OPEN",
+                restriction: {department:"OPEN",},
+                children:null,
+              },
+              {
+                displayName:"一般",
+                restriction: {department:"一般",},
+                children:null,
+              },
+              {
+                displayName:"NOVICE",
+                restriction: {department:"NOVICE",},
+                children:null,
+              },
+              {
+                displayName:"ADVANCED",
+                restriction: {department:"ADVANCED",},
+                children:null,
+              },
+            ]
+          },
+        ]
+      },
+      {
+        displayName: "Accel Party",
+        restriction: {category: "accelparty",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children:null
+          },
+          {
+            displayName:"2017",
+            restriction: {year:2017,},
+            children:null
+          },
+          {
+            displayName:"2016",
+            restriction: {year:2016,},
+            children:null
+          },
+        ]
+      },
+      {displayName:"Double Dutch Contest",
+        restriction: {category:"ddcj",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children: [
+              {
+                displayName:"OPEN1",
+                restriction: {department:"OPEN1",},
+                children:null,
+              },
+              {
+                displayName:"OPEN2",
+                restriction: {department:"OPEN2",},
+                children:null,
+              },
+              {
+                displayName:"U-19",
+                restriction: {department:"U-19",},
+                children:null,
+              },
+              {
+                displayName:"JUNIOR",
+                restriction: {department:"JUNIOR",},
+                children:null,
+              },
+              {
+                displayName:"MTTR",
+                restriction: {department:"MTTR",},
+                children:null,
+              },
+              {
+                displayName:"FINAL",
+                restriction: {department:"FINAL",},
+                children:null,
+              },
+            ]
+          },
+          {
+            displayName:"2018",
+            restriction: {year:2018,},
+            children: [
+              {
+                displayName:"OPEN",
+                restriction: {department:"OPEN",},
+                children:null,
+              },
+            ]
+          },
+          {
+            displayName:"2017",
+            restriction: {year:2017,},
+            children: [
+              {displayName:"OPEN",
+                restriction: {department:"OPEN",},
+                children:null,
+              },
+            ]
+          },
+          {
+            displayName:"2016",
+            restriction: {year:2016,},
+            children: [
+              {
+                displayName:"OPEN",
+                restriction: {department:"OPEN",},
+                children:null,
+              },
+              {
+                displayName:"U-19",
+                restriction: {department:"U-19",},
+                children:null,
+              },
+              {
+                displayName:"JUNIOR",
+                restriction: {department:"JUNIOR",},
+                children:null,
+              },
+            ]
+          },
+        ]
+      },
+      {
+        displayName:"NF",
+        restriction: {category:"nf",},
+        children: [
+          {
+            displayName:"2018",
+            restriction: {year:2018,},
+            children: [
+              {
+                displayName:"ダブルダッチ",
+                restriction: {department:"ダブルダッチ",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"単縄",
+                restriction: {department:"単縄",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"Finale",
+                restriction: {department:"Finale",},
+                children:null,
+              },
+              {
+                displayName:"ステージ",
+                restriction: {department:"ステージ",},
+                children:null,
+              },
+              {
+                displayName:"SpecialMovie",
+                restriction: {department:"Special Movie",},
+                children: null,
+              },
+            ]
+          },
+          {
+            displayName:"2017",
+            restriction: {year:2017,},
+            children: [
+              {
+                displayName: "ダブルダッチ",
+                restriction: {department:"ダブルダッチ",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"単縄",
+                restriction: {department:"単縄",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"Finale",
+                restriction: {department:"Finale",},
+                children:null,
+              },
+              {
+                displayName:"ステージ",
+                restriction: {department:"ステージ",},
+                children:null,
+              },
+            ],
+          },
+          {
+            displayName:"2016",
+            restriction: {year:2016,},
+            children: [
+              {
+                displayName:"1日目",
+                restriction: {day:1,},
+                children:null,
+              },
+              {
+                displayName:"2日目",
+                restriction: {day:2,},
+                children:null,
+              },
+              {
+                displayName:"3日目",
+                restriction: {day:3,},
+                children:null,
+              },
+              {
+                displayName:"4日目",
+                restriction: {day:4,},
+                children:null,
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
+  {
+    displayName:"大会その2",
+    restriction: {},
+    children: [
+      {
+        displayName:"DDS",
+        restriction: {category:"dds",},
+        children:null,
+      },
+      {
+        displayName:"World Jump Rope",
+        restriction: {category:"wjr",},
+        children: [
+          {
+            displayName:"MTTR",
+            restriction: {department:"MTTR",},
+            children:null,
+          },
+          {
+            displayName:"シングルフリースタイル",
+            restriction: {department:"シングルフリースタイル",},
+            children:null,
+          },
+          {
+            displayName:"スピード",
+            restriction: {department:"スピード",},
+            children:null,
+          },
+          {
+            displayName:"ペアフリースタイル",
+            restriction: {department:"ペアフリースタイル",},
+            children:null,
+          },
+          {
+            displayName:"その他",
+            restriction: {department:"その他",},
+            children:null,
+          },
+        ]
+      },
+      {
+        displayName:"FDDF",
+        restriction: {category:"fddf",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children:null,
+          },
+        ],
+      },
+      {
+        displayName:"Japan Open",
+        restriction: {category:"japanopen",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children:null,
+          },
+        ],
+      },
+      {
+        displayName:"GOLD",
+        restriction: {category:"gold",},
+        children: [
+          {
+            displayName:"2017",
+            restriction: {year:2017,},
+            children: [
+              {
+                displayName: "Battle",
+                restriction: {department:"BATTLE",},
+                children:null,
+              },
+              {
+                displayName:"ShowCase",
+                restriction: {department:"SHOW CASE",},
+                children:null,
+              },
+              {
+                displayName:"その他",
+                restriction: {department:"その他",},
+                children:null,
+              },
+            ],
+          }
+        ]
+      },
+      {
+        displayName:"JC",
+        restriction: {category:"jc",},
+        children: [
+          {
+            displayName:"個人フリースタイル",
+            restriction: {department:"13JC 個人戦フリースタイル",},
+            children:null,
+          },
+          {
+            displayName:"団体フリースタイル",
+            restriction: {department:"13JC 団体戦フリースタイル",},
+            children:null,
+          },
+        ]
+      },
+    ]
+  },
+  {
+    displayName: "サークル",
+    restriction: {},
+    children: [
+      {
+        displayName:"正規練",
+        restriction: {category:"正規練",},
+        children:null,
+      },
+      {
+        displayName:"発表会",
+        restriction: {category:"発表会",},
+        children: [
+          {
+            displayName:"DDDW",
+            restriction: {department:"ddd",},
+            children: [
+              {
+                displayName:"2019/9/14",
+                restriction: {originatedDate:time(new Date("2019-09-14")),},
+                children:null,
+              },
+              {
+                displayName:"2019/9/12",
+                restriction: {originatedDate:time(new Date("2019-09-12")),},
+                children:null,
+              },
+              {
+                displayName:"2019/9/7",
+                restriction: {originatedDate:time(new Date("2019-09-07")),},
+                children:null,
+              },
+            ],
+          },
+          {
+            displayName:"FDDF",
+            restriction: {department:"fddf",},
+            children: [
+              {
+                displayName:"2019/8/20",
+                restriction: {originatedDate:time(new Date("2019-08-20")),},
+                children:null,
+              },
+            ],
+          },
+          {
+            displayName:"DDGP",
+            restriction: {department:"ddgp",},
+            children: [
+              {
+                displayName:"2019/8/17",
+                restriction: {originatedDate:time(new Date("2019-08-17")),},
+                children:null,
+              },
+              {
+                displayName:"2019/8/13",
+                restriction: {originatedDate:time(new Date("2019-08-13")),},
+                children:null,
+              },
+            ],
+          },
+          {
+            displayName:"WorldJumpRope & DDS",
+            restriction: {department:"wjr",},
+            children: [
+              {
+                displayName:"2019/6/29",
+                restriction: {originatedDate:time(new Date("2019-06-29")),},
+                children:null,
+              },
+              {
+                displayName:"2019/6/26",
+                restriction: {originatedDate:time(new Date("2019-06-26")),},
+                children:null,
+              },
+              {
+                displayName:"2019/6/22",
+                restriction: {originatedDate:time(new Date("2019-06-22")),},
+                children:null,
+              },
+            ],
+          },
+          {
+            displayName:"NF",
+            restriction: {department:"nf",},
+            children:[
+              {
+                displayName:"2018/11/17",
+                restriction: {originatedDate:time(new Date("2018-11-17")),},
+                children:null,
+              },
+              {
+                displayName:"2018/11/15",
+                restriction: {originatedDate:time(new Date("2018-11-15")),},
+                children:null,
+              },
+              {
+                displayName:"2018/11/13",
+                restriction: {originatedDate:time(new Date("2018-11-13")),},
+                children:null,
+              },
+            ]
+          },
+        ],
+      },
+      {
+        displayName:"夏合宿",
+        restriction: {category:"夏合宿",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children:null,
+          },
+        ],
+      },
+      {
+        displayName:"MTTR ONE\'S",
+        restriction: {category:"mttrones",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children:null,
+          },
+          {
+            displayName:"2018",
+            restriction: {year:2018,},
+            children:null,
+          },
+        ]
+      },
+    ]
+  },
+  {
+    displayName:"学内のイベント",
+    restriction: {},
+    children: [
+      {
+        displayName:"NF",
+        restriction: {category:"nf",},
+        children: [
+          {
+            displayName:"2018",
+            restriction: {year:2018,},
+            children: [
+              {
+                displayName:"ダブルダッチ",
+                restriction: {department:"ダブルダッチ",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"単縄",
+                restriction: {department:"単縄",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"Finale",
+                restriction: {department:"Finale",},
+                children:null,
+              },
+              {
+                displayName:"ステージ",
+                restriction: {department:"ステージ",},
+                children:null,
+              },
+              {
+                displayName:"SpecialMovie",
+                restriction: {department:"Special Movie",},
+                children: null,
+              },
+            ]
+          },
+          {
+            displayName:"2017",
+            restriction: {year:2017,},
+            children: [
+              {
+                displayName: "ダブルダッチ",
+                restriction: {department:"ダブルダッチ",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"単縄",
+                restriction: {department:"単縄",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"Finale",
+                restriction: {department:"Finale",},
+                children:null,
+              },
+              {
+                displayName:"ステージ",
+                restriction: {department:"ステージ",},
+                children:null,
+              },
+            ],
+          },
+          {
+            displayName:"2016",
+            restriction: {year:2016,},
+            children: [
+              {
+                displayName:"1日目",
+                restriction: {day:1,},
+                children:null,
+              },
+              {
+                displayName:"2日目",
+                restriction: {day:2,},
+                children:null,
+              },
+              {
+                displayName:"3日目",
+                restriction: {day:3,},
+                children:null,
+              },
+              {
+                displayName:"4日目",
+                restriction: {day:4,},
+                children:null,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        displayName:"ルネ屋台",
+        restriction: {category:"ルネ屋台",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children:null
+          }
+        ],
+      },
+      {
+        displayName:"総人オープンキャンパス",
+        restriction: {category:"opencampus",},
+        children: [
+          {displayName:"2019",
+            restriction: {year:2019,},
+            children:null,
+          }
+        ],
+      },
+      {
+        displayName:"くすのき秋祭",
+        restriction: {category:"くすのき秋祭",},
+        children: [
+          {displayName:"2018",
+            restriction: {year:2018,},
+            children:null
+          }
+        ],
+      },
+    ]
+  },
+  {
+    displayName:"その他",
+    restriction: {},
+    children: [
+      {
+        displayName:"フリーロープ",
+        restriction: {category:"その他", department:'フリーロープ',},
+        children:null,
+      },
+      {
+        displayName:"舞鶴合宿",
+        restriction: {category:"舞鶴合宿",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children:null,
+          }
+        ],
+      },
+      {
+        displayName:"D-act五月祭",
+        restriction: {category:"五月祭",},
+        children: [
+          {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children:null,
+          }
+        ],
+      },
+    ],
+  },
+]
+// setTimeout(() =>
+// console.log(updateStructures(folders))
+// ,10000)

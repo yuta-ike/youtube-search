@@ -7,9 +7,14 @@ const emptyUser = {
   token: null,
   favorites: [],
   valid: false,
+  settings:{
+    itemsPerRow: 4,
+    itemsPerColumn: 3,
+    sort: 'index',
+  }
 }
 
-const databaseKey = ['accountType', 'uname', 'favorites', 'valid']
+const databaseKey = ['accountType', 'uname', 'favorites', 'valid', 'settings']
 
 const user = new class User{
   constructor(){
@@ -58,3 +63,5 @@ const user = new class User{
 }
 
 export default Object.seal(user)
+
+export const settings = Object.freeze(user.settings)
