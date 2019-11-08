@@ -1,6 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { withRouter } from 'react-router-dom'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -8,19 +7,16 @@ import CardContent from '@material-ui/core/CardContent';
 import CardActions from '@material-ui/core/CardActions';
 import Typography from '@material-ui/core/Typography';
 import Divider from '@material-ui/core/Divider';
-import ReactPlayer from 'react-player';
 
 import ShareDialog from './ShareDialog.js'
 import PlayerDialog from './PlayerDialog.js'
 import GeneralButton from './GeneralButton.js'
 
+import { useLazy } from './customhooks.js'
 import { addFavorite, removeFavorite } from './firebase/favorite.js'
 import { getDisplayName } from './firebase/videoManager.js'
 import { store, stop } from './store.js'
 import { get as getThumbnail } from './firebase/thumbnail.js'
-
-import user from './firebase/user.js'
-import axios from 'axios'
 
 const useStyles = makeStyles(theme => ({
   title: {
@@ -46,8 +42,6 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-let initialized = false
-
 export default function VideoCard(props){
   const classes = useStyles()
   const includePath = props.type === "INCLUDE-PATH"
@@ -61,15 +55,6 @@ export default function VideoCard(props){
   const [playerOpen, setPlayerOpen] = useState(props.playerOpen)
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   const [favorite, setFavorite] = useState(props.favorite)
-
-  let id
-  if(!initialized){
-    initialized = true
-  }
-  useEffect(() => () => {
-    initialized = false
-    stop(id)
-  }, [])
 
   async function handleFavorite(){
     const response = (!favorite) ? await addFavorite(data.vid) : await removeFavorite(data.vid)
@@ -88,9 +73,9 @@ export default function VideoCard(props){
     store('MAIN_CONTENT', {type: 'MAIN_PAGE'})
   }
 
-  const loadImagePath = `${process.env.PUBLIC_URL}/load_image.png`
-  const [thumbnailSrc, setThumbnailSrc] = useState(loadImagePath)
-  getThumbnail(data.vid).then(setThumbnailSrc)
+  // const [thumbnailSrc, setThumbnailSrc] = useState(`${process.env.PUBLIC_URL}/load_image.png`)
+  // getThumbnail(data.vid).then(setThumbnailSrc)
+  const thumbnailSrc = useLazy(getThumbnail(data.vid), `${process.env.PUBLIC_URL}/load_image.png`)
 
   return (
     <React.Fragment>

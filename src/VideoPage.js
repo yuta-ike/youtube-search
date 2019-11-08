@@ -49,17 +49,16 @@ const useStyles = makeStyles(theme => ({
 let initialized = false
 
 export default withRouter(function VideoPage(props){
-  const classes = useStyles();
+  const classes = useStyles()
 
   const [page, setPage] = useState([])
   const [cardType, setCardType] = useState('DEFAULT')
   const [hasAround, setHasAround] = useState({hasNext: false, hasBack: false})
   const [hierarchyList, setHierarchyList] = useState([])
-  let id1, id2, id3
   const [playerOpen, setPlayerOpen] = useState(false)
 
-  if(!initialized){
-    id1 = observe("PAGE_DATA", async content => {
+  useEffect(() => {
+    const id1 = observe("PAGE_DATA", async content => {
       const { videos, hasNext } =
           await getVideo({
             conditions: content.conditions,
@@ -75,8 +74,7 @@ export default withRouter(function VideoPage(props){
         props.history.push('/main')
       }
     })
-    id2 = observe("PAGE_DATA_SEARCH", async content => {
-      console.log("BBBBBBBBBB")
+    const id2 = observe("PAGE_DATA_SEARCH", async content => {
       console.log(content)
       const { hits } =
           await search(content.query)
@@ -87,24 +85,19 @@ export default withRouter(function VideoPage(props){
         props.history.push('/main')
       }
     })
-    id3 = observe('BREADCRUMBS', arr => setHierarchyList(arr))
+    const id3 = observe('BREADCRUMBS', arr => setHierarchyList(arr))
+
     if(props.vid != null){
       (async () => {
-        console.log("CCCCCCC")
         setPage([await getVideo({vId: props.vid})])
         setCardType('INCLUDE-PATH')
         setHasAround({next: false, back: false})
         setPlayerOpen(true)
       })()
     }
-    initialized = true
-  }
 
-  useEffect(() => () => {
-    initialized = false
-    stop(id1, id2, id3)
+    return () => stop(id1, id2, id3)
   }, [])
-
 
   const [open, setOpen] = useState(false)
 
