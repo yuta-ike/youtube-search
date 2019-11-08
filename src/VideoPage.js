@@ -42,7 +42,6 @@ const useStyles = makeStyles(theme => ({
     margin: theme.spacing(2),
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(2),
-
   }
 }));
 
@@ -51,25 +50,19 @@ let initialized = false
 export default withRouter(function VideoPage(props){
   const classes = useStyles()
 
-  const [page, setPage] = useState([])
-  const [cardType, setCardType] = useState('DEFAULT')
-  const [hasAround, setHasAround] = useState({hasNext: false, hasBack: false})
+  const [content, setContent] = useState({videos: [], cardType: 'DEFAULT', hasNext: false, hasBack: false})
+  // const [page, setPage] = useState([])
+  // const [cardType, setCardType] = useState('DEFAULT')
+  // const [hasAround, setHasAround] = useState({hasNext: false, hasBack: false})
   const [hierarchyList, setHierarchyList] = useState([])
   const [playerOpen, setPlayerOpen] = useState(false)
 
   useEffect(() => {
     const id1 = observe("PAGE_DATA", async content => {
-      const { videos, hasNext } =
-          await getVideo({
-            conditions: content.conditions,
-            searchType:content.searchType,
-            page: content.page,
-            size: settings.itemsPerRow * settings.itemsPerColumn,
-            readNextPage: true
-          })
-      setPage(videos)
-      setCardType(content.cardType)
-      setHasAround({next: hasNext, back: content.page > 0})
+      // setPage(content.videos)
+      // setCardType(content.cardType)
+      // setHasAround({next: content.hasNext, back: content.hasBack/*content.page > 0*/})
+      setContent(content)
       if(props.history.location.pathname !== '/main'){
         props.history.push('/main')
       }
@@ -78,9 +71,10 @@ export default withRouter(function VideoPage(props){
       console.log(content)
       const { hits } =
           await search(content.query)
-      setPage(hits)
-      setCardType("INCLUDE-PATH")
-      setHasAround({next: false, back: false})
+      // setPage(hits)
+      // setCardType("INCLUDE-PATH")
+      // setHasAround({next: false, back: false})
+      setContent({videos: hits, cardType: 'INCLUDE-PATH', hasNext: false, hasBack: false})
       if(props.history.location.pathname !== '/main'){
         props.history.push('/main')
       }
@@ -89,9 +83,10 @@ export default withRouter(function VideoPage(props){
 
     if(props.vid != null){
       (async () => {
-        setPage([await getVideo({vId: props.vid})])
-        setCardType('INCLUDE-PATH')
-        setHasAround({next: false, back: false})
+        // setPage([await getVideo({vId: props.vid})])
+        // setCardType('INCLUDE-PATH')
+        // setHasAround({next: false, back: false})
+        setContent({videos: [await getVideo({vId: props.vid})], cardType: 'INCLUDE-PATH', hasNext: false, hasBack: false})
         setPlayerOpen(true)
       })()
     }
@@ -120,8 +115,8 @@ export default withRouter(function VideoPage(props){
       <ProgressButton
         onClickNext={next}
         onClickBack={back}
-        canClickNext={hasAround.next}
-        canClickBack={hasAround.back}
+        canClickNext={content.hasNext}
+        canClickBack={content.hasBack}
         right={props.type === 'header' && (
           <IconButton aria-label="open setting" onClick={openPageSetting}>
             {open ? <UnfoldLessIcon/> : <UnfoldMoreIcon/>}
@@ -180,13 +175,13 @@ export default withRouter(function VideoPage(props){
       {open && <Settings/>}
       <GridPage
         col={settings.itemsPerRow}
-        row={Math.ceil(page.length / settings.itemsPerRow)}
+        row={Math.ceil(content.videos.length / settings.itemsPerRow)}
       >
         {
-          page.map(data =>
+          content.videos.map(data =>
             <VideoCard
               key={data.vid}
-              type={cardType}
+              type={content.cardType}
               data={data}
               favorite={isFavorite(data.vid)}
               playerOpen={playerOpen && props.vid === data.vid}

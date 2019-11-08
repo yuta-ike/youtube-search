@@ -1,3 +1,5 @@
+import { getVideo } from './firebase/videoManager.js'
+
 let events = {}
 
 let prevStates = {
@@ -15,28 +17,63 @@ export const store = async (name, _currState) => {
   switch(_currState.type){
     case 'FILE_READ': {
       const currPayload = _currState.payload
-      const content = {
+      const { videos, hasNext } =
+        await getVideo({
+          conditions: currPayload.conditions,
+          searchType:currPayload.searchType,
+          startIndex: null,
+          size: 20,//settings.itemsPerRow * settings.itemsPerColumn,
+          readNextPage: true
+        })
+      
+      prevStates[name] = {
         ...currPayload,
-        page: 0,
+        pageNum: 0,
+        pages: [videos],
       }
-      dispatchEvent(name, content)
-      prevStates[name] = content
+
+      dispatchEvent(name, {videos, hasNext, hasBack: false, videoCardType: _currState.videocardType})
       return
     }
     break
     case 'FILE_READ_NEXT': {
       const prevPayload = prevStates[name]
-      const content = Object.assign(prevPayload, {page: prevPayload.page + 1})
-      dispatchEvent(name, content)
-      prevStates[name] = content
+      const newPageNum = prevPayload.pageNum + 1
+
+      const { videos, hasNext } = 
+        newPageNum < prevPayload.pages.length ? 
+          { videos: prevPayload.pages[newPageNum], hasNext: true } :
+          await getVideo({
+            conditions: prevPayload.conditions,
+            searchType:prevPayload.searchType,
+            startIndex: prevPayload.pages[prevPayload.pages.length - 1].slice(-1)[0].index,
+            size: 20,//settings.itemsPerRow * settings.itemsPerColumn,
+            readNextPage: true
+          })
+      
+      prevStates[name] = {
+        ...prevPayload,
+        pageNum: newPageNum,
+        pages: newPageNum < prevPayload.pages.length ? prevPayload.pages : [...prevPayload.pages, videos],
+      }
+
+      await dispatchEvent(name, {videos, hasNext, hasBack: true, videoCardType: prevPayload.videocardType})
       return
     }
     break
     case 'FILE_READ_BACK': {
       const prevPayload = prevStates[name]
-      const content = Object.assign(prevPayload, {page: prevPayload.page - 1})
-      dispatchEvent(name, content)
-      prevStates[name] = content
+      const newPageNum = prevPayload.pageNum - 1
+
+      const { videos, hasNext } = { videos: prevPayload.pages[newPageNum], hasNext: true }
+      
+      prevStates[name] = {
+        ...prevPayload,
+        pageNum: newPageNum,
+        pages: prevPayload.pages,
+      }
+
+      await dispatchEvent(name, {videos, hasNext, hasBack: newPageNum > 0, videoCardType: prevPayload.videocardType})
       return
     }
     break
@@ -56,12 +93,6 @@ export const store = async (name, _currState) => {
     break
     case 'PAGE_UPDATE': {
       Object.assign(prevStates[name], _currState)
-    }
-    break
-    case 'PAGE_DATA':{
-      await dispatchEvent(name, _currState)
-      currState[name] = _currState
-      return
     }
     break
     default:{

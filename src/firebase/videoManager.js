@@ -36,20 +36,20 @@ const searchVideoWithCategory = async (conditions, size, startIndex) => {
   const query = await Object.entries(conditions)
                             .reduce((videodb, [dbtype, dbname]) => videodb.where(dbtype, '==', dbname), videodb)
                             .orderBy('index')
-                            .startAt(startIndex)
+                            .startAfter(startIndex)
                             .limit(size)
                             .get()
   const res = query.docs.map(document => Object.assign(document.data(), {vid:document.id}))
   return res
 }
 
-export const getVideo = async ({vId, conditions, size=1, searchType, page=0, readNextPage=false}) => {
-  const getVideo = async ({vId, conditions, size, searchType, page}) => {
+export const getVideo = async ({vId, conditions, size=1, searchType, startIndex=null, page=0, readNextPage=false}) => {
+  const getVideo = async ({vId, conditions, size, searchType, page, startIndex}) => {
     if(vId != null){
       return await searchVideoWithVid(vId)
     }else if(conditions != null){
       if(searchType === 'GENERAL-DATA'){
-        return await searchVideoWithCategory(conditions, size, page * size)
+        return await searchVideoWithCategory(conditions, size, startIndex)
       }else if(searchType === 'INDIVIDUAL-DATA'){
         return await searchVideoWithIndividualData(size, page * size)
       }else{
@@ -59,11 +59,11 @@ export const getVideo = async ({vId, conditions, size=1, searchType, page=0, rea
       console.error('[SearchVideo Error]')
     }
   }
-  const videos = await getVideo({vId, conditions, size, searchType, page, readNextPage})
-  const nextVideos = readNextPage ? await getVideo({vId, conditions, size, searchType, page: page+1}) : []
+  const videos = await getVideo({vId, conditions, size, searchType, page, startIndex})
+  const nextVideos = readNextPage ? await getVideo({vId, conditions, size, searchType, page: page+1, startIndex: videos[videos.length - 1].index}) : null
   return {
     videos,
-    hasNext: nextVideos.length > 0
+    hasNext: nextVideos != null ? nextVideos.length > 0 : null
   }
 }
 
