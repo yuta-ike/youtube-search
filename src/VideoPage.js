@@ -104,14 +104,13 @@ export default withRouter(function VideoPage(props){
   function NavButton(props){
     async function next(){
       await store('PAGE_DATA', pageDataNext())
-      window.scrollTo(0, 0)
+      window.scrollTo({top:0, left:0, behavior:"smooth"})
     }
 
     async function back(){
       await store('PAGE_DATA', pageDataBack())
-      window.scrollTo(0, 0)
+      window.scrollTo({top:0, left:0, behavior:"smooth"})
     }
-
 
     function openPageSetting(){
       setOpen(!open)

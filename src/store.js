@@ -48,19 +48,20 @@ export const store = async (name, _currState) => {
       prevStates[name].payload.content = _currState.payload.content
     }
     break
-    case 'BREADCRUMBS': {}
-    break
     case 'MAIN_CONTENT': {
-      // console.log(_currState.type, currState[name].type)
-      // if(_currState.type !== currState[name].type){
-        dispatchEvent(name, _currState)
-      // }
+      dispatchEvent(name, _currState)
       currState[name] = _currState
       return
     }
     break
     case 'PAGE_UPDATE': {
       Object.assign(prevStates[name], _currState)
+    }
+    break
+    case 'PAGE_DATA':{
+      await dispatchEvent(name, _currState)
+      currState[name] = _currState
+      return
     }
     break
     default:{
