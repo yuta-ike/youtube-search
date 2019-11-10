@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom'
-import clsx from 'clsx';
+
 import Breadcrumbs from '@material-ui/core/Breadcrumbs';
 import Typography from '@material-ui/core/Typography';
 import NavigateNextIcon from '@material-ui/icons/NavigateNext';
 import Grid from '@material-ui/core/Grid'
 import Box from '@material-ui/core/Box'
+import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton';
 import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import UnfoldLessIcon from '@material-ui/icons/UnfoldLess';
@@ -17,10 +18,12 @@ import ProgressButton from './ProgressButton.js'
 import MenuButton from './MenuButton.js'
 
 import { store, observe, stop } from './store.js'
-import { pageDataNext, pageDataBack } from './action.js'
+import { pageDataNext, pageDataBack, pageDataRefresh } from './action.js'
 import { isFavorite } from './firebase/favorite.js'
 import { getVideo, getDisplayName, search } from './firebase/videoManager.js'
 import { settings } from './firebase/user.js'
+
+import useStateWithLocalStorage from './localStorageManager.js'
 
 const useStyles = makeStyles(theme => ({
   breadcrumbs: {
@@ -45,23 +48,18 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-let initialized = false
-
 export default withRouter(function VideoPage(props){
   const classes = useStyles()
 
   const [content, setContent] = useState({videos: [], cardType: 'DEFAULT', hasNext: false, hasBack: false})
-  // const [page, setPage] = useState([])
-  // const [cardType, setCardType] = useState('DEFAULT')
-  // const [hasAround, setHasAround] = useState({hasNext: false, hasBack: false})
   const [hierarchyList, setHierarchyList] = useState([])
   const [playerOpen, setPlayerOpen] = useState(false)
 
+  const [numOfItems, setNumOfItems] = useStateWithLocalStorage("NUM-Of-ITEMS-PER-PAGE", 24)
+  const [orderBy, setOrderBy] = useStateWithLocalStorage("ORDER-BY", "index")
+
   useEffect(() => {
     const id1 = observe("PAGE_DATA", async content => {
-      // setPage(content.videos)
-      // setCardType(content.cardType)
-      // setHasAround({next: content.hasNext, back: content.hasBack/*content.page > 0*/})
       setContent(content)
       if(props.history.location.pathname !== '/main'){
         props.history.push('/main')
@@ -69,11 +67,7 @@ export default withRouter(function VideoPage(props){
     })
     const id2 = observe("PAGE_DATA_SEARCH", async content => {
       console.log(content)
-      const { hits } =
-          await search(content.query)
-      // setPage(hits)
-      // setCardType("INCLUDE-PATH")
-      // setHasAround({next: false, back: false})
+      const { hits } = await search(content.query)
       setContent({videos: hits, cardType: 'INCLUDE-PATH', hasNext: false, hasBack: false})
       if(props.history.location.pathname !== '/main'){
         props.history.push('/main')
@@ -83,14 +77,10 @@ export default withRouter(function VideoPage(props){
 
     if(props.vid != null){
       (async () => {
-        // setPage([await getVideo({vId: props.vid})])
-        // setCardType('INCLUDE-PATH')
-        // setHasAround({next: false, back: false})
         setContent({videos: [await getVideo({vId: props.vid})], cardType: 'INCLUDE-PATH', hasNext: false, hasBack: false})
         setPlayerOpen(true)
       })()
     }
-
     return () => stop(id1, id2, id3)
   }, [])
 
@@ -127,35 +117,43 @@ export default withRouter(function VideoPage(props){
   }
 
   function Settings(){
+    const handleChange = key => choice => {
+      if(key === 'NUM-Of-ITEMS-PER-PAGE') setNumOfItems(choice)
+      else if(key === 'ORDER-BY') setOrderBy(choice)
+    }
+
+    const refresh = async () => {
+      await store('PAGE_DATA', pageDataRefresh())
+      window.scrollTo({top:0, left:0, behavior:"smooth"})
+    }
+
     return (
       <Box className={classes.paper} elevation={0}>
         <Grid container className={classes.grid} spacing={1}>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <Typography className={classes.text} variant='body1'>
-              {'Items per row : '}
+              {'Items per page : '}
               <MenuButton
-                initValue={settings.itemsPerRow}
-                choices={[1,2,3,4,5,6]}
+                initValue={numOfItems}
+                choices={[8,12,24,48,"ALL"]}
+                onChange={handleChange('NUM-Of-ITEMS-PER-PAGE')}
               />
             </Typography>
           </Grid>
-          <Grid item xs={3}>
-            <Typography className={classes.text} variant='body1'>
-              {'Items per column : '}
-              <MenuButton
-                initValue={settings.itemsPerColumn}
-                choices={[1,2,3,4,8,16]}
-              />
-            </Typography>
-          </Grid>
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <Typography className={classes.text} variant='body1'>
               {'Sort : '}
               <MenuButton
-                initValue={settings.sort}
-                choices={['番号順', 'チーム名順', '所属団体順', 'Youtubeプレイリスト再生順']}
+                initValue={orderBy}
+                choices={[{label:'番号順', value:'index'}, {label:'チーム名順', value:'title'}]}
+                onChange={handleChange('ORDER-BY')}
               />
             </Typography>
+          </Grid>
+          <Grid item xs={4}>
+            <Button color="primary" variant="contained" onClick={refresh}>
+              更新
+            </Button>
           </Grid>
         </Grid>
       </Box>
@@ -174,8 +172,8 @@ export default withRouter(function VideoPage(props){
       <NavButton type="header"/>
       {open && <Settings/>}
       <GridPage
-        col={settings.itemsPerRow}
-        row={Math.ceil(content.videos.length / settings.itemsPerRow)}
+        col={4}
+        row={Math.ceil(content.videos.length / 4)}
       >
         {
           content.videos.map(data =>

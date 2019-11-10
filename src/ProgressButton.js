@@ -24,11 +24,11 @@ export default function ProgressButton(props){
         </Grid>
         <Grid item xs>
           <ButtonGroup aria-label="progress buttons">
-            <Button disabled={!props.canClickBack}>
-              <ArrowBackIcon onClick={props.onClickBack}/>
+            <Button onClick={props.onClickBack} disabled={!props.canClickBack}>
+              <ArrowBackIcon/>
             </Button>
-            <Button disabled={!props.canClickNext}>
-              <ArrowForwardIcon onClick={props.onClickNext}/>
+            <Button onClick={props.onClickNext} disabled={!props.canClickNext}>
+              <ArrowForwardIcon/>
             </Button>
           </ButtonGroup>
         </Grid>

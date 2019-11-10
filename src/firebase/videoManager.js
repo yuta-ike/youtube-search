@@ -29,27 +29,29 @@ const searchVideoWithVid = async (id) => {
   return Object.assign(document.data(), {vid:document.id})
 }
 
-const searchVideoWithCategory = async (conditions, size, startIndex) => {
+const searchVideoWithCategory = async (conditions, size, startIndex, orderBy) => {
   console.log("SEARCH-VIDEO-WITH-CATEGORY")
   if(Object.keys(conditions).length === 0) return []
 
-  const query = await Object.entries(conditions)
-                            .reduce((videodb, [dbtype, dbname]) => videodb.where(dbtype, '==', dbname), videodb)
-                            .orderBy('index')
-                            .startAfter(startIndex)
-                            .limit(size)
-                            .get()
-  const res = query.docs.map(document => Object.assign(document.data(), {vid:document.id}))
+  const query1 = Object.entries(conditions)
+                        .reduce((videodb, [dbtype, dbname]) => videodb.where(dbtype, '==', dbname), videodb)
+                        .orderBy(orderBy)
+                        .startAfter(startIndex)
+
+  const query2 = !isNaN(Number(size)) ? query1.limit(Number(size)) : 
+                 size == "ALL"        ? query1                     : null
+  
+  const res = (await query2.get()).docs.map(document => Object.assign(document.data(), {vid:document.id}))
   return res
 }
 
-export const getVideo = async ({vId, conditions, size=1, searchType, startIndex=null, page=0, readNextPage=false}) => {
-  const getVideo = async ({vId, conditions, size, searchType, page, startIndex}) => {
+export const getVideo = async ({vId, conditions, size=1, searchType, startIndex=null, page=0, readNextPage=false, orderBy='index'}) => {
+  const getVideo = async ({vId, conditions, size, searchType, page, startIndex, orderBy}) => {
     if(vId != null){
       return await searchVideoWithVid(vId)
     }else if(conditions != null){
       if(searchType === 'GENERAL-DATA'){
-        return await searchVideoWithCategory(conditions, size, startIndex)
+        return await searchVideoWithCategory(conditions, size, startIndex, orderBy)
       }else if(searchType === 'INDIVIDUAL-DATA'){
         return await searchVideoWithIndividualData(size, page * size)
       }else{
@@ -59,8 +61,9 @@ export const getVideo = async ({vId, conditions, size=1, searchType, startIndex=
       console.error('[SearchVideo Error]')
     }
   }
-  const videos = await getVideo({vId, conditions, size, searchType, page, startIndex})
-  const nextVideos = readNextPage ? await getVideo({vId, conditions, size, searchType, page: page+1, startIndex: videos[videos.length - 1].index}) : null
+  const videos = await getVideo({vId, conditions, size, searchType, page, startIndex, orderBy})
+  console.log(videos)
+  const nextVideos = readNextPage && videos.length > 0 ? await getVideo({vId, conditions, size, searchType, page: page+1, startIndex: videos[videos.length - 1][orderBy], orderBy}) : null
   return {
     videos,
     hasNext: nextVideos != null ? nextVideos.length > 0 : null

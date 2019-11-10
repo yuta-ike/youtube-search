@@ -19,10 +19,17 @@ const useStyles = makeStyles(theme => ({
 
 export default function MenuButton(props){
   const classes = useStyles();
-  const { initValue, choices, handleSelect = ()=>{} } = props
+  const { initValue, choices : _choices, onChange } = props
 
-  const [anchorEl, setAnchorEl] = React.useState(null)
-  const [value, setValue] = useState(initValue)
+  const choices = _choices.map(choice => (typeof choice) == 'object' ? choice : {value:choice, label:choice})
+
+  const [anchorEl, setAnchorEl] = useState(null)
+  const [value, setValue] = useState(choices.find(({_, value}) => value == initValue).label)
+
+  function handleSelect(e, choice){
+    onChange(choice.value)
+    setValue(choice.label)
+  }
 
   function handleClose(e){
     setAnchorEl(null)
@@ -45,9 +52,12 @@ export default function MenuButton(props){
         open={Boolean(anchorEl)}
         onClose={handleClose}
       >
-      {
-        choices.map(choice => <MenuItem className={classes.menuItem} onClick={handleClose} key={choice}>{choice}</MenuItem>)
-      }
+        {
+          choices
+            .map(choice => {
+                return <MenuItem className={classes.menuItem} onClick={e => handleSelect(e, choice)} key={choice.label}>{choice.label}</MenuItem>
+            })
+        }
       </Menu>
     </React.Fragment>
   )

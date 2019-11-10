@@ -1,4 +1,5 @@
 import { getVideo } from './firebase/videoManager.js'
+import { localStorageTable } from './localStorageManager.js'
 
 let events = {}
 
@@ -17,19 +18,24 @@ export const store = async (name, _currState) => {
   switch(_currState.type){
     case 'FILE_READ': {
       const currPayload = _currState.payload
+      const size = localStorageTable["NUM-Of-ITEMS-PER-PAGE"]
+      const orderBy = localStorageTable["ORDER-BY"]
       const { videos, hasNext } =
         await getVideo({
           conditions: currPayload.conditions,
           searchType:currPayload.searchType,
           startIndex: null,
-          size: 20,//settings.itemsPerRow * settings.itemsPerColumn,
-          readNextPage: true
+          readNextPage: true,
+          size,
+          orderBy,
         })
       
       prevStates[name] = {
         ...currPayload,
         pageNum: 0,
         pages: [videos],
+        size,
+        orderBy,
       }
 
       dispatchEvent(name, {videos, hasNext, hasBack: false, videoCardType: _currState.videocardType})
@@ -40,14 +46,16 @@ export const store = async (name, _currState) => {
       const prevPayload = prevStates[name]
       const newPageNum = prevPayload.pageNum + 1
 
+        console.log(prevPayload)
       const { videos, hasNext } = 
         newPageNum < prevPayload.pages.length ? 
-          { videos: prevPayload.pages[newPageNum], hasNext: true } :
+          { videos: prevPayload.pages[newPageNum], hasNext: newPageNum !==  prevPayload.pages.length - 1} :
           await getVideo({
             conditions: prevPayload.conditions,
             searchType:prevPayload.searchType,
-            startIndex: prevPayload.pages[prevPayload.pages.length - 1].slice(-1)[0].index,
-            size: 20,//settings.itemsPerRow * settings.itemsPerColumn,
+            startIndex: prevPayload.pages[prevPayload.pages.length - 1].slice(-1)[0][prevPayload.orderBy],
+            size: prevPayload.size,
+            orderBy: prevPayload.orderBy,
             readNextPage: true
           })
       
@@ -74,6 +82,47 @@ export const store = async (name, _currState) => {
       }
 
       await dispatchEvent(name, {videos, hasNext, hasBack: newPageNum > 0, videoCardType: prevPayload.videocardType})
+      return
+    }
+    break
+    case 'FILE_READ_REFRESH':{
+      const currPayload = _currState.payload
+      const prevPayload = prevStates[name]
+
+      const size = localStorageTable["NUM-Of-ITEMS-PER-PAGE"]
+      const orderBy = localStorageTable["ORDER-BY"]
+      const { videos, hasNext } =
+        await getVideo({
+          conditions: prevPayload.conditions,
+          searchType:prevPayload.searchType,
+          startIndex: null,
+          readNextPage: true,
+          size,
+          orderBy,
+        })
+      
+      const newPages = (() => {
+        const result = []
+        const allItems = prevPayload.pages.flat()
+        for(let i = 0; i < allItems.length; i += size){
+          result[i] = []
+          for(let j = 0; j < size; j++){
+            result[i][j] = allItems.shift()
+          }
+        }
+        return result
+      })()
+
+      prevStates[name] = {
+        ...prevPayload,
+        pageNum: 0,
+        pages: newPages,
+        size,
+        orderBy,
+      }
+      console.log(videos)
+
+      dispatchEvent(name, {videos, hasNext, hasBack: false, videoCardType: prevPayload.videocardType})
       return
     }
     break

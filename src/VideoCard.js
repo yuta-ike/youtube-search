@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
+import { withRouter } from 'react-router-dom'
 import Card from '@material-ui/core/Card'
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardMedia from '@material-ui/core/CardMedia';
@@ -42,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-export default function VideoCard(props){
+export default withRouter(function VideoCard(props){
   const classes = useStyles()
   const includePath = props.type === "INCLUDE-PATH"
   const data = props.data
@@ -69,12 +70,12 @@ export default function VideoCard(props){
   function handlePlayerClose(){
     setPlayerOpen(false)
 
-    props.history.push('/main')
+    if(props.history.location.pathname !== '/main'){
+      props.history.push('/main')
+    }
     store('MAIN_CONTENT', {type: 'MAIN_PAGE'})
   }
 
-  // const [thumbnailSrc, setThumbnailSrc] = useState(`${process.env.PUBLIC_URL}/load_image.png`)
-  // getThumbnail(data.vid).then(setThumbnailSrc)
   const thumbnailSrc = useLazy(getThumbnail(data.vid), `${process.env.PUBLIC_URL}/load_image.png`)
 
   return (
@@ -125,4 +126,4 @@ export default function VideoCard(props){
       />
     </React.Fragment>
   )
-}
+})

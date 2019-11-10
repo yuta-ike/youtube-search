@@ -1,4 +1,4 @@
-export const pageData = (conditions, folderType) => {
+export const pageData = (conditions, folderType, size=24) => {
   if(folderType === 'SUB_FOLDER'){
     return {
       type: 'FILE_READ',
@@ -27,6 +27,11 @@ export const pageDataNext = () => ({
 
 export const pageDataBack = () => ({
   type: 'FILE_READ_BACK',
+  payload: {},
+})
+
+export const pageDataRefresh = () => ({
+  type: 'FILE_READ_REFRESH',
   payload: {},
 })
 
