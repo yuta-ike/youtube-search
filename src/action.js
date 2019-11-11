@@ -3,7 +3,7 @@ export const pageData = (conditions, folderType, size=24) => {
     return {
       type: 'FILE_READ',
       payload:{
-        searchType: "INDIVIDUAL-DATA",
+        searchType: "PERSONIZED-SEARCH",
         videocardType:"INCLUDE-PATH",
         conditions,
       }
@@ -12,7 +12,7 @@ export const pageData = (conditions, folderType, size=24) => {
     return {
       type:'FILE_READ',
       payload:{
-        searchType: "GENERAL-DATA",
+        searchType: "CATEGORY-SEARCH",
         videocardType:"DEFAULT",
         conditions,
       }
@@ -39,7 +39,7 @@ export const pageDataSearch = query => ({
   type: 'FILE_SEARCH',
   payload: {
     query,
-    searchType: "SEARCH",
+    searchType: "QUERY-SEARCH",
     videocardType:"INCLUDE-PATH",
   },
 })

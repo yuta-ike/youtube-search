@@ -1,4 +1,4 @@
-import { getVideo, search } from './firebase/videoManager.js'
+import { getVideo } from './firebase/videoManager.js'
 import { localStorageTable } from './localStorageManager.js'
 
 let events = {}
@@ -24,116 +24,40 @@ export const store = async (name, _currState) => {
       const orderBy = localStorageTable["ORDER-BY"]
 
       const { videos, hasNext } =
-        await getVideo('CATEGORY-SEARCH',{
+        await getVideo(searchType,{
           conditions: currPayload.conditions,
           searchType:currPayload.searchType,
           startIndex: null,
-          readNextPage: true,
           size,
           orderBy,
         })
       
-      const getVideoFunc = async(pageNum, prevPayload) => {
-        if(pageNum < prevPayload.pages.length){
-          return { videos: prevPayload.pages[pageNum], hasNext: true/*pageNum !==  prevPayload.pages.length - 1*/} //ここのhasNext  1->2->1->2と進んだ時 3ページ目に進めない
-        }else{
-          return await getVideo('CATEGORY-SEARCH', {
-            conditions: conditions,
-            searchType: searchType,
-            startIndex: prevPayload.pages[prevPayload.pages.length - 1].slice(-1)[0][orderBy],
-            size,
-            orderBy,
-            readNextPage: true
-          })
-        }
-      }
+      const getVideoFunc =
+        async(pageNum, pages) => await getVideo(searchType, {
+          startIndex: searchType == 'PERSONIZED-SEARCH' ? pageNum * size : pages[pages.length - 1].slice(-1)[0][orderBy],
+          conditions,
+          searchType,
+          size,
+          orderBy,
+          readNextPage: true
+        })
       
       prevStates[name] = {
         ...currPayload,
         pageNum: 0,
-        pages: [videos],
+        pages: hasNext ? [videos] : [videos, null],
         getVideoFunc,
-        // size,
-        // orderBy,
       }
 
-      dispatchEvent(name, {videos, hasNext, hasBack: false, videoCardType: currPayload.videocardType})
-      return
-    }
-    break
-    case 'FILE_READ_NEXT': {
-      const prevPayload = prevStates[name]
-      const newPageNum = prevPayload.pageNum + 1
-
-      const { videos, hasNext } = await prevPayload.getVideoFunc(newPageNum, prevPayload)
-        // newPageNum < prevPayload.pages.length ? 
-        //   { videos: prevPayload.pages[newPageNum], hasNext: newPageNum !==  prevPayload.pages.length - 1} :
-        //   await getVideo('CATEGORY-SEARCH', {
-        //     conditions: prevPayload.conditions,
-        //     searchType:prevPayload.searchType,
-        //     startIndex: prevPayload.pages[prevPayload.pages.length - 1].slice(-1)[0][prevPayload.orderBy],
-        //     size: prevPayload.size,
-        //     orderBy: prevPayload.orderBy,
-        //     readNextPage: true
-        //   })
-      
-      prevStates[name] = {
-        ...prevPayload,
-        pageNum: newPageNum,
-        pages: newPageNum < prevPayload.pages.length ? prevPayload.pages : [...prevPayload.pages, videos],
-      }
-
-      await dispatchEvent(name, {videos, hasNext, hasBack: true, videoCardType: prevPayload.videocardType})
-      return
-    }
-    break
-    case 'FILE_READ_BACK': {
-      const prevPayload = prevStates[name]
-      const newPageNum = prevPayload.pageNum - 1
-
-      const { videos, hasNext } = await prevPayload.getVideoFunc(newPageNum, prevPayload)//{ videos: prevPayload.pages[newPageNum], hasNext: true }
-      
-      prevStates[name] = {
-        ...prevPayload,
-        pageNum: newPageNum,
-        pages: prevPayload.pages,
-      }
-
-      await dispatchEvent(name, {videos, hasNext, hasBack: newPageNum > 0, videoCardType: prevPayload.videocardType})
+      await dispatchEvent(name, {videos, hasNext, hasBack: false, videoCardType: currPayload.videocardType})
       return
     }
     break
     case 'FILE_READ_REFRESH':{
       const prevPayload = prevStates[name]
-
       const { conditions, searchType } = prevPayload
       const size = localStorageTable["NUM-Of-ITEMS-PER-PAGE"]
       const orderBy = localStorageTable["ORDER-BY"]
-
-      const { videos, hasNext } =
-        await getVideo('CATEGORY-SEARCH', {  //わざわざ呼ばなくても良いよね
-          conditions: prevPayload.conditions,
-          searchType:prevPayload.searchType,
-          startIndex: null,
-          readNextPage: true,
-          size,
-          orderBy,
-        })
-
-      const getVideoFunc = async(pageNum, prevPayload) => {
-        if(pageNum < prevPayload.pages.length){
-          return { videos: prevPayload.pages[pageNum], hasNext: true/*pageNum !==  prevPayload.pages.length - 1*/}
-        }else{
-          return await getVideo('CATEGORY-SEARCH', {
-            conditions: conditions,
-            searchType: searchType,
-            startIndex: prevPayload.pages[prevPayload.pages.length - 1].slice(-1)[0][orderBy],
-            size,
-            orderBy,
-            readNextPage: true
-          })
-        }
-      }
 
       const newPages = (() => {
         const result = []
@@ -141,19 +65,35 @@ export const store = async (name, _currState) => {
         for(let i = 0; i < allItems.length; i += size){
           result[i] = []
           for(let j = 0; j < size; j++){
-            result[i][j] = allItems.shift()
+            result[i].push(allItems.shift())
           }
         }
         return result
       })()
+
+      const { videos, hasNext } =
+        await getVideo(searchType, {  //わざわざ呼ばなくても良いよね
+          conditions: prevPayload.conditions,
+          searchType:prevPayload.searchType,
+          startIndex: null,
+          size,
+          orderBy,
+        })
+
+      const getVideoFunc =
+          async(pageNum, pages) => await getVideo(searchType, {
+            startIndex: pages[pages.length - 1].slice(-1)[0][orderBy],
+            conditions,
+            searchType,
+            size,
+            orderBy,
+          })
 
       prevStates[name] = {
         ...prevPayload,
         getVideoFunc,
         pageNum: 0,
         pages: newPages,
-        // size,
-        // orderBy,
       }
 
       await dispatchEvent(name, {videos, hasNext, hasBack: false, videoCardType: prevPayload.videocardType})
@@ -167,7 +107,7 @@ export const store = async (name, _currState) => {
       const query = currPayload.query
       const size = localStorageTable["NUM-Of-ITEMS-PER-PAGE"]
 
-      const getVideoFunc = async(pageNum) => await getVideo('QUERY-SEARCH', {query, page:pageNum, size})
+      const getVideoFunc = async(pageNum) => await getVideo(prevPayload.searchType, {query, page:pageNum, size})
       
       const { videos, nbPages } = await getVideoFunc(0)
 
@@ -175,10 +115,48 @@ export const store = async (name, _currState) => {
         ...prevPayload,
         getVideoFunc,
         pageNum: 0,
-        pages: [videos],
+        pages: nbPages > 1 ? [videos] : [videos, null],
       }
 
-      await dispatchEvent(name, {videos, hasNext: nbPages > 0, hasBack: false, videoCardType: currPayload.videocardType})
+      await dispatchEvent(name, {videos, hasNext: nbPages > 1, hasBack: false, videoCardType: currPayload.videocardType})
+      return
+    }
+    break
+    case 'FILE_READ_NEXT': {
+      const prevPayload = prevStates[name]
+      const { pages, pageNum, videoCardType, getVideoFunc } = prevPayload
+      const newPageNum = pageNum + 1
+
+      const { videos, hasNext } = pages[newPageNum] != null ? 
+                                    { videos: pages[newPageNum], hasNext: pages[newPageNum + 1] != null } :
+                                    await getVideoFunc(newPageNum, pages)
+      
+      prevStates[name] = {
+        ...prevPayload,
+        pageNum: newPageNum,
+        pages: newPageNum < pages.length ? pages : [...pages, videos],
+      }
+
+      await dispatchEvent(name, {videos, hasNext, hasBack: true, videoCardType})
+      return
+    }
+    break
+    case 'FILE_READ_BACK': {
+      const prevPayload = prevStates[name]
+      const { pages, pageNum, videoCardType, getVideoFunc } = prevPayload
+      const newPageNum = pageNum - 1
+
+      const { videos, hasNext } = pages[newPageNum] != null ?
+                                    { videos: pages[newPageNum], hasNext: true } :
+                                    await getVideoFunc(newPageNum, pages)
+
+      prevStates[name] = {
+        ...prevPayload,
+        pageNum: newPageNum,
+        pages,
+      }
+
+      await dispatchEvent(name, {videos, hasNext, hasBack: newPageNum > 0, videoCardType})
       return
     }
     break
