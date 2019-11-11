@@ -67,8 +67,8 @@ export default withRouter(function VideoPage(props){
     })
     const id2 = observe("PAGE_DATA_SEARCH", async content => {
       console.log(content)
-      const { hits } = await search(content.query)
-      setContent({videos: hits, cardType: 'INCLUDE-PATH', hasNext: false, hasBack: false})
+      // const { hits } = await search(content.query)
+      setContent(content)
       if(props.history.location.pathname !== '/main'){
         props.history.push('/main')
       }

@@ -37,7 +37,11 @@ export const pageDataRefresh = () => ({
 
 export const pageDataSearch = query => ({
   type: 'FILE_SEARCH',
-  payload: {query},
+  payload: {
+    query,
+    searchType: "SEARCH",
+    videocardType:"INCLUDE-PATH",
+  },
 })
 
 export const primData = value => {

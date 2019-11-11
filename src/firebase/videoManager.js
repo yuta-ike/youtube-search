@@ -9,7 +9,6 @@ const algoliaClient = algoliasearch(process.env.REACT_APP_ALGOLIA_APPLICATION_ID
 const algoliaIndex = algoliaClient.initIndex('videos')
 
 const searchVideoWithIndividualData = async (size=24, startIndex=0) => {
-  console.log("SEARCH-VIDEO-WITH-INDIVIDUAL-DATA")
   if(!user.loggedIn){
     return []
   }
@@ -24,13 +23,11 @@ const searchVideoWithIndividualData = async (size=24, startIndex=0) => {
 }
 
 const searchVideoWithVid = async (id) => {
-  console.log("SEARCH-VIDEO-WITH-VID")
   const document = await videodb.doc(id).get()
   return Object.assign(document.data(), {vid:document.id})
 }
 
 const searchVideoWithCategory = async (conditions, size, startIndex, orderBy) => {
-  console.log("SEARCH-VIDEO-WITH-CATEGORY")
   if(Object.keys(conditions).length === 0) return []
 
   const query1 = Object.entries(conditions)
@@ -45,30 +42,78 @@ const searchVideoWithCategory = async (conditions, size, startIndex, orderBy) =>
   return res
 }
 
-export const getVideo = async ({vId, conditions, size=1, searchType, startIndex=null, page=0, readNextPage=false, orderBy='index'}) => {
-  const getVideo = async ({vId, conditions, size, searchType, page, startIndex, orderBy}) => {
-    if(vId != null){
-      return await searchVideoWithVid(vId)
-    }else if(conditions != null){
-      if(searchType === 'GENERAL-DATA'){
-        return await searchVideoWithCategory(conditions, size, startIndex, orderBy)
-      }else if(searchType === 'INDIVIDUAL-DATA'){
-        return await searchVideoWithIndividualData(size, page * size)
-      }else{
-        console.error('[Searchtype Error]')
-      }
-    }else{
-      console.error('[SearchVideo Error]')
+export const searchVideoWithQuery = async params => await algoliaIndex.search(params)
+
+export const getVideo = async(type, params) => {
+  if(type === 'CATEGORY-SEARCH'){
+    const { conditions, size, startIndex, orderBy } = params
+    const videos = await searchVideoWithCategory(conditions, size, startIndex, orderBy)
+    const nextVideos = videos.length > 0 ? await searchVideoWithCategory(conditions, size, videos[videos.length - 1][orderBy], orderBy) : null
+    return {
+      videos,
+      hasNext: nextVideos != null ? nextVideos.length > 0 : false
     }
-  }
-  const videos = await getVideo({vId, conditions, size, searchType, page, startIndex, orderBy})
-  console.log(videos)
-  const nextVideos = readNextPage && videos.length > 0 ? await getVideo({vId, conditions, size, searchType, page: page+1, startIndex: videos[videos.length - 1][orderBy], orderBy}) : null
-  return {
-    videos,
-    hasNext: nextVideos != null ? nextVideos.length > 0 : null
+  }else if(type === 'PERSONIZED-SEARCH'){
+    const { size, page } = params
+    const videos = await searchVideoWithIndividualData(size, page * size) //ここどうにかする
+    const nextVideos = videos.length > 0 ? await searchVideoWithIndividualData(size, page * size)  : null
+    return {
+      videos,
+      hasNext: nextVideos != null ? nextVideos.length > 0 : false
+    }
+  }else if(type === 'ID-SEARCH'){
+    const { vid } = params
+    const videos = await searchVideoWithVid(vid)
+    return {
+      videos,
+      hasNext: false
+    }
+  }else if(type === 'QUERY-SEARCH'){
+    const { query, page, size } = params
+    const { hits: videos, nbPages } = await searchVideoWithQuery({query, page, hitsPerPage: size})
+    return {
+      videos,
+      nbPages,      
+    }
+  }else{
+    throw new Error("Unknown search type")
   }
 }
+
+// export const getVideo =
+//   async ({
+//     vId,
+//     conditions,
+//     size=1,
+//     searchType,
+//     startIndex=null,
+//     page=0,
+//     readNextPage=false,
+//     orderBy='index',
+//   }) => {
+//     const getVideo = async ({vId, conditions, size, searchType, page, startIndex, orderBy}) => {
+//       if(vId != null){
+//         return await searchVideoWithVid(vId)
+//       }else if(conditions != null){
+//         if(searchType === 'GENERAL-DATA'){
+//           return await searchVideoWithCategory(conditions, size, startIndex, orderBy)
+//         }else if(searchType === 'INDIVIDUAL-DATA'){
+//           return await searchVideoWithIndividualData(size, page * size)
+//         }else{
+//           console.error('[Searchtype Error]')
+//         }
+//       }else{
+//         console.error('[SearchVideo Error]')
+//       }
+//     }
+//     const videos = await getVideo({vId, conditions, size, searchType, page, startIndex, orderBy})
+//     console.log(videos)
+//     const nextVideos = readNextPage && videos.length > 0 ? await getVideo({vId, conditions, size, searchType, page: page+1, startIndex: videos[videos.length - 1][orderBy], orderBy}) : null
+//     return {
+//       videos,
+//       hasNext: nextVideos != null ? nextVideos.length > 0 : null
+//     }
+//   }
 
 const categoriesTable = {
   'ACCEL PARTY'                : 'accelparty',
@@ -409,4 +454,3 @@ export const resetDb = async (algoliaAPIKey, selectedTitles=[], updateAll = fals
   dbConfigDocref.set({timestamp: nowTimestamp})
   resetAlgolia(algoliaAPIKey)
 }
-export const search = async word => algoliaIndex.search(word)

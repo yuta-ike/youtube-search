@@ -13,6 +13,10 @@ export default (useStyles) => function Search(props){
     props.onChange(e.target.value)
   }
 
+  function handleClick(){
+   props.onClick(word)
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -23,7 +27,7 @@ export default (useStyles) => function Search(props){
           value={word}
           onChange={e => handleChange(e)}
         />
-        <IconButton className={classes.iconButton} aria-label="Search">
+        <IconButton className={classes.iconButton} aria-label="Search" onClick={handleClick}>
           <SearchIcon />
         </IconButton>
       </Paper>

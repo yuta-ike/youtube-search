@@ -98,7 +98,7 @@ export default function Home(props) {
     clearTimeout(timer)
     if(word !== ''){
       timer = setTimeout(() => {
-        store('PAGE_DATA_SEARCH', pageDataSearch(word))
+        store('PAGE_DATA', pageDataSearch(word))
       }, 500)
     }
   }
@@ -106,7 +106,7 @@ export default function Home(props) {
   return (
     <div className={classes.root}>
       <AppBar open={open} setOpen={setOpen}>
-        <SearchBox onChange={handleSearchBox}/>
+        <SearchBox onChange={handleSearchBox} onClick={handleSearchBox}/>
         <NotificationButton />
         <ExtensionButton />
         <Typography className={classes.uname} variant="body1">
