@@ -80,8 +80,6 @@ export default withRouter(function PlayerDialog(props) {
     setFullscreen(false)
   }
 
-  useEffect(() => console.log("a"))
-
   function handleFullscreen(){
     setFullscreen(true)
   }

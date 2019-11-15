@@ -4,3 +4,8 @@ export const pushHistory = (history, resourceName) => {
   if(pathname === newPathname) return
   history.push(newPathname)
 }
+
+export const getPath = (resourceName) => {
+  const pathname = window.location.pathname
+  return pathname.replace(/\/\w*$/, resourceName)
+}

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import ReactPlayer from 'react-player';
 import { withRouter } from 'react-router-dom'
 import { makeStyles, withStyles } from '@material-ui/core/styles';
@@ -12,6 +12,9 @@ import CloseIcon from '@material-ui/icons/CloseRounded';
 import FullscreenIcon from '@material-ui/icons/Fullscreen';
 import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import IconButton from '@material-ui/core/IconButton';
+import Drawer from 'react-drag-drawer'
+import Typography from '@material-ui/core/Typography';
+import { getDisplayName } from './firebase/videoManager.js'
 
 import GeneralButton from './GeneralButton.js'
 import ShareDialog from './ShareDialog.js'
@@ -59,11 +62,74 @@ const useStyles = makeStyles(theme => ({
   contentText:{
     flexGrow: 1,
   },
-  slider:{
-    marginLeft: theme.spacing(2),
-    marginRight: theme.spacing(2),
+  reactPlayer:{
+    position: 'absolute',
+    top: 0,
+    left: 0,
   },
+  playerWrapper:{
+    position: "relative",
+    paddingTop: "56.25%",
+  },
+  dialog:{
+    padding: 0,
+  },
+
+  modal:{
+    background: "white",
+    fontSize: "1.6rem",
+    width: "100%",
+    justifyContent: "space-between",
+    zIndex: theme.zIndex.drawer,
+    willChange: "transform",
+    borderTopRightRadius: "8px",
+    borderTopLeftRadius: "8px",
+    marginTop: "auto",
+    
+    height: "99%",
+    overflowY: "scroll",
+    transform: "translate3d(0, 0, 0)",
+  },
+  modalHandle:{
+    position: "sticky",
+    top: 0,
+    background: "black",
+    width: "auto",
+    height: "2rem",
+    zIndex: 20,
+  },
+  modalContainer:{
+    position: "fixed",
+    width: "100%",
+  },
+
+  title: {
+    color: "rgb(69,69,69)",
+    marginBottom: 12,
+    margin: theme.spacing(2),
+  },
+  description:{
+    color: "rgb(69,69,69)",
+    margin: theme.spacing(2),
+
+  },
+
 }));
+
+
+function useLockBodyScroll() {
+  const unlock = () => {
+    document.body.style.overflow = "visible"
+  }
+  const lock = () => {
+    document.body.style.overflow = 'hidden';
+  }
+  useLayoutEffect(() => {
+  //  lock()
+   return unlock
+  }, []); 
+  return [lock, unlock]
+}
 
 export default withRouter(function PlayerDialog(props) {
   const classes = useStyles();
@@ -73,14 +139,17 @@ export default withRouter(function PlayerDialog(props) {
   const [fullscreen, setFullscreen] = useState(initFullscreen)
   const [success, setSuccess] = useState(true)
 
+  const [lock, unlock] = useLockBodyScroll()
+  const close = () => {
+    unlock()
+    handleClose()
+  }
 
   // props.history.push(`/main?vid=${data.vid}`)
   function handleClose() {
     _handleClose()
     setFullscreen(false)
   }
-
-  useEffect(() => console.log("a"))
 
   function handleFullscreen(){
     setFullscreen(true)
@@ -99,44 +168,80 @@ export default withRouter(function PlayerDialog(props) {
     setProgress(x.playedSeconds)
   }
 
+  //たっぷ処理
+  const modal = useRef(null)
+  const step = useRef(0.95)
+  const dragStart = useRef(0)
+  const handleTouchDown = e => {
+    // lock()
+    // modal.current.style.transitionDuration = 0
+    // dragStart.current = e.changedTouches[0].pageY
+  }
+  const handleTouchMove = e =>{
+  }
+  const handleTouchUp = e => {
+    // unlock()
+    // if(e.changedTouches[0].pageY / window.outerHeight > 0.5){
+    //   modal.current.style.transitionDuration = 200
+    //   close()
+    // }else{
+      // step.current = 0.95
+      // modal.current.style.transitionDuration = 200
+    // }
+    // modal.current.style.height = step.current
+  }
+
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   return (
-      <Dialog
-        fullWidth
-        fullScreen={fullscreen}
-        maxWidth="md"
+      <Drawer
+        className={classes.modal}
         open={open}
-        onClose={handleClose}
-        aria-labelledby="max-width-dialog-title"
-        PaperProps={{style:{height:'100%'}}}
+        direction='bottom'
+        modalElementClass={classes.modal}
+        containerElementClass={classes.modalContainer}
+        // getModalRef={element => modal.current = element}
+          // onTouchStart={handleTouchDown}
+          // onTouchEnd={handleTouchUp}
+          // onTouchCancel={handleTouchUp}
+          // onTouchMove={handleTouchMove}
+        onRequestClose={close}
+        
+        hideBackdrop
+        width="100%"
       >
-        <MyDialogTitle id="max-width-dialog-title"
-          {...{fullscreen, onFullscreen:handleFullscreen, onFullscreenExit:handleFullscreenExit, onClose:handleClose}}
-        >
-          {data.title}
-        </MyDialogTitle>
+        <div
+          // className={classes.modalHandle}
+          // onTouchStart={handleTouchDown}
+          // onTouchEnd={handleTouchUp}
+          // onTouchCancel={handleTouchUp}
+          // onTouchMove={handleTouchMove}
+        />
         <DialogContent className={classes.dialog}>
-          {success ?
-            <ReactPlayer
-              className={classes.reactPlayer}
-              url={props.url}
-              width='100%'
-              height='100%'
-              playing
-              controls
-              loop
-              onError={handleAuthError}
-              config={{
-                youtube: {
-                  playerVars: {
-                    modestbranding: true,
-                    start:0,
+          {success ? (
+            <div className={classes.playerWrapper}>
+              <ReactPlayer
+                className={classes.reactPlayer}
+                url={props.url}
+                width='100%'
+                height='100%'
+                playing
+                controls
+                loop
+                pip
+                onError={handleAuthError}
+                config={{
+                  youtube: {
+                    playerVars: {
+                      modestbranding: true,
+                      start:0,
+                      showinfo: 0,
+                    }
                   }
-                }
-              }}
-              onProgress={handleProgress}
-            /> 
-            :
+                }}
+                onProgress={handleProgress}
+              /> 
+            </div>
+          ):
             <DialogContentText className={classes.button}>
               Youtubeにログインしていないため動画を再生できません。
               <Button variant="outlined" className={classes.contentText} href="https://www.youtube.com">
@@ -144,16 +249,21 @@ export default withRouter(function PlayerDialog(props) {
               </Button>
             </DialogContentText>
           }
+
+          <Typography variant="h6" color="textSecondary" component="h4" className={classes.title}>
+            {typeof(data.index) === 'number' ? `${data.index}. ${data.title}` : data.title}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p" className={classes.description} style={{whiteSpace: 'pre-line'}}>
+            <strong>{` ${getDisplayName(data.category)}${data.year != null && (` (${data.year})`) || ''}${data.department != null && (' ' + data.department) || ''} ${data.day != null && (data.day + '日目') || ''}`}</strong>
+            <strong>{`${data.affiliation != null && data.affiliation || ''}`}</strong>
+            <br/>
+            {data.description.replace(/\\n/g, '\n')}
+          </Typography>
+          <GeneralButton type="favorite" onClick={handleFavorite} value={favorite}/>
+          <GeneralButton type="share" onClick={() => setShareDialogOpen(true)}/>
+          <ShareDialog open={shareDialogOpen} setOpen={setShareDialogOpen} vid={data.vid}/>
         </DialogContent>
-        {!fullscreen &&
-          <DialogActions disableSpacing>
-            {/*<Slider progress={progress}/>*/}
-            <GeneralButton type="favorite" onClick={handleFavorite} value={favorite}/>
-            <GeneralButton type="share" onClick={() => setShareDialogOpen(true)}/>
-            <ShareDialog open={shareDialogOpen} setOpen={setShareDialogOpen} vid={data.vid}/>
-          </DialogActions>
-        }
-      </Dialog>
+      </Drawer>
   )
 })
 

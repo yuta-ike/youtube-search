@@ -3,7 +3,7 @@ import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Typography from '@material-ui/core/Typography';
 import SearchBox from './SearchBox/SearchBoxInMenuBar.js'
-import AppBar from './AppBar.js'
+import AppBar from './M_AppBar.js'
 import NotificationButton from './Notification.js'
 import ExtensionButton from './ExtensionButton.js'
 import SideDrawer from './M_SideDrawer.js'
@@ -14,7 +14,7 @@ import NotifyPortal from './NotifyPortal.js'
 import Help from './Help.js'
 import Information from './Information.js'
 import TestButton from './TestButton.js'
-
+import SearchIcon from '@material-ui/icons/Search'
 import { store, observe } from './store.js'
 import { pageDataSearch } from './action.js'
 import { onAuthStateChanged, getName } from './firebase/auth.js'
@@ -29,11 +29,13 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     flexGrow: 1,
-    width: '100%'
+    width: '100%',
+    paddingBottom: 55,
   },
   contentShift: {
     marginLeft: 0,
-    width: '100%'
+    width: '100%',
+    paddingBottom: 50,
   },
   uname: {
     paddingLeft: theme.spacing(2),
@@ -72,12 +74,16 @@ export default function Home(props) {
     store('BREADCRUMBS',arr)
   }
 
+  function handleFolderOpen(){
+    setOpen(!open)
+  }
+
   const [name, setName] = useState(getName())
   onAuthStateChanged('Home', (state, user) => {
     if(state == 'SUCCESS'){
       setName(user.uname)
     }
-  })
+  })  
 
   let timer
   async function handleSearchBox(word){
@@ -91,14 +97,6 @@ export default function Home(props) {
 
   return (
     <div className={classes.root}>
-      {/* <AppBar open={open} setOpen={setOpen}>
-        <SearchBox onChange={handleSearchBox} onClick={handleSearchBox}/>
-        <NotificationButton />
-        <ExtensionButton />
-        <Typography className={classes.uname} variant="body1">
-          {name}
-        </Typography>
-      </AppBar> */}
       <SideDrawer open={open} setOpen={setOpen} handleHierarchyList={handleHierarchyList}/>
       <main className={clsx(classes.content, {
           [classes.contentShift]: open,
@@ -126,6 +124,19 @@ export default function Home(props) {
           null
         }
       </main>
+      <AppBar
+        onClickCenter={handleFolderOpen}
+        right={
+          <React.Fragment>
+            <NotificationButton />
+            <ExtensionButton />
+          </React.Fragment>
+        }
+        left={
+          <SearchIcon/>
+          // <SearchBox onChange={handleSearchBox} onClick={handleSearchBox}/>
+        }
+      /> 
     </div>
   );
 }

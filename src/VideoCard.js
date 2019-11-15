@@ -34,7 +34,6 @@ const useStyles = makeStyles(theme => ({
   },
   description:{
     color: "rgb(20,20,20)",
-
   },
   iconButtonArea:{
     paddingTop: '0.1rem',
@@ -135,8 +134,8 @@ export default withRouter(function VideoCard(props){
           handleClose={handlePlayerClose}
           favorite={favorite}
           handleFavorite={handleFavorite}
+          fullscreen={true}
           url={`https://www.youtube.com/watch?v=${data.vid}`}
-          fullscreen={props.playerOpen}
         />
       </React.Fragment>
     )

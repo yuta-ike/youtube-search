@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import clsx from 'clsx';
 import { makeStyles, MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 import { createGlobalStyle } from 'styled-components';
+import { withRouter } from 'react-router-dom'
 import { Redirect } from 'react-router-dom'
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
@@ -20,7 +21,7 @@ import SimpleAppBar from './SimpleAppBar.js'
 
 import { loginGoogle, onAuthStateChanged, logout } from './firebase/auth.js'
 import user from './firebase/user.js'
-import urls from './urlManager.js'
+import { getPath } from './uriChecker.js'
 
 const GlobalStyle = createGlobalStyle`@import url("https://fonts.googleapis.com/css?family=Varela+Round&display=swap");`
 const theme = createMuiTheme({
@@ -184,7 +185,7 @@ export default function Login(props) {
           isLoading ? (
             <div className={classes.main}>
               <CircularProgress className={classes.progress} />
-              {redirect ? <Redirect to={urls[0]} /> : null}
+              {redirect ? <Redirect to={(console.log(getPath('/main')),getPath('/main'))} /> : null}
             </div>
           ):(
             <MuiThemeProvider theme={theme}>

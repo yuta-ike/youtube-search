@@ -17,9 +17,6 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexGrow: 1,
   },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
@@ -39,13 +36,13 @@ const useStyles = makeStyles(theme => ({
     fontSize: "1.6rem",
     width: "97%",
     justifyContent: "space-between",
-    zIndex: 15,
+    zIndex: theme.zIndex.drawer,
     willChange: "transform",
     borderTopRightRadius: "8px",
     borderTopLeftRadius: "8px",
     marginTop: "auto",
-    
-    height: "50%",
+    paddingBottom: 100,
+    height: "80%",
     overflowY: "scroll",
   },
   modalHandle:{
@@ -57,22 +54,24 @@ const useStyles = makeStyles(theme => ({
     zIndex: 20,
   },
   modalContainer:{
-    position: "absolute",
+    position: "fixed",
     width: "100%",
   }
 }));
 
-function useLockBodyScroll() {
-  const unlock = () => {
-    document.body.style.overflow = "visible"
-  }
-  useLayoutEffect(() => {
-  //  originalStyle = window.getComputedStyle(document.body).overflow;
-   document.body.style.overflow = 'hidden';
-   return unlock
-  }, []); 
-  return unlock
-}
+// function useLockBodyScroll() {
+//   const unlock = () => {
+//     document.body.style.overflow = "visible"
+//   }
+//   const lock = () => {
+//     document.body.style.overflow = 'hidden';
+//   }
+//   useLayoutEffect(() => {
+//    lock()
+//    return unlock
+//   }, []); 
+//   return [lock, unlock]
+// }
 
 export default function SideDrawer(props){
   const classes = useStyles();
@@ -81,7 +80,7 @@ export default function SideDrawer(props){
   mainFolderStructurePromise.then(value => setMainFolderStructure(value))
   const [selected, setSelected] = useState(null)
 
-  // const unlock = useLockBodyScroll()
+  // const [lock, unlock] = useLockBodyScroll()
   const close = () => {
     setOpen(false)
   //   unlock()
@@ -89,30 +88,31 @@ export default function SideDrawer(props){
 
 
   //たっぷ処理
-  const modal = useRef(null)
-  const step = useRef("50%")
-  const dragStart = useRef(0)
+  // const modal = useRef(null)
+  // const step = useRef("50%")
+  // const dragStart = useRef(0)
+  // const [dontApplyListeners, setDontApplyListeners] = useState(false)
+  // useEffect(() => console.log(dontApplyListeners), [dontApplyListeners])
   const handleTouchDown = e => {
-    modal.current.style.transitionDuration = 0
-    dragStart.current = e.changedTouches[0].pageY
+    // dragStart.current = e.changedTouches[0].pageY
+    // setDontApplyListeners(false)
   }
   const handleTouchMove = e =>{
-    const delta = Math.round(e.changedTouches[0].pageY - dragStart.current)
-    modal.current.style.height = `calc(${step.current} - ${delta}px)`
+    // if(step.current === "50%"){
+    //   const delta = Math.round(e.changedTouches[0].pageY - dragStart.current)
+    //   modal.current.style.height = `calc(${step.current} - ${delta}px)`
+    // }
   }
   const handleTouchUp = e => {
-    // console.log(e.changedTouches[0].pageY/window.outerHeight)
-    if(e.changedTouches[0].pageY / window.outerHeight > 0.6){
-      modal.current.style.transitionDuration = 200
-      close()
-    }else if(e.changedTouches[0].pageY / window.outerHeight > 0.3){
-      modal.current.style.transitionDuration = 200
-      step.current = "50%"
-    }else{
-      step.current = "95%"
-      modal.current.style.transitionDuration = 200
-    }
-    modal.current.style.height = step.current
+    // if(e.changedTouches[0].pageY / window.outerHeight > 0.6){
+    //   close()
+    // }else if(e.changedTouches[0].pageY / window.outerHeight > 0.3){
+    //   step.current = "50%"
+    // }else{
+    //   step.current = "90%"
+    // }
+    // modal.current.style.height = step.current
+    // setDontApplyListeners(true)
   }
 
   return (
@@ -123,17 +123,20 @@ export default function SideDrawer(props){
       direction='bottom'
       modalElementClass={classes.modal}
       containerElementClass={classes.modalContainer}
-      getModalRef={element => modal.current = element}
+      // getModalRef={element => modal.current = element}
       hideBackdrop
+      onRequestClose={close}
+      // allowClose={false}
+      dontApplyListeners={true}
       width="100%"
     >
-      <div
+      {/* <div
         className={classes.modalHandle}
         onTouchStart={handleTouchDown}
         onTouchEnd={handleTouchUp}
         onTouchCancel={handleTouchUp}
         onTouchMove={handleTouchMove}
-      />
+      /> */}
       <FolderHierarchy
         folderStructure={subFolderStructure}
         onClickFile={(_, hierarchy) =>{

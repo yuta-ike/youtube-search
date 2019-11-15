@@ -29,7 +29,6 @@ const useStyles = makeStyles(theme => ({
   breadcrumbs: {
     paddingLeft: '32px',
     paddingTop: theme.spacing(2),
-    marginBottom: '-12px'
   },
   grid:{
     textAlign: 'center',

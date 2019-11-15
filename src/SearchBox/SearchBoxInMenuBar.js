@@ -9,7 +9,7 @@ const useStyles = makeStyles({
     marginRight: 0,
   },
   paper: {
-    'padding-left': 10,
+    paddingLeft: 10,
     margin: 10,
     display: 'flex',
     alignItems: 'center',
