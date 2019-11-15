@@ -175,7 +175,8 @@ export default withRouter(function VideoPage(props){
               favorite={isFavorite(data.vid)}
               playerOpen={playerOpen && props.vid === data.vid}
               cardStyle={{
-                elevation: 1,
+                elevation: 0,
+                square: true,
               }}
             />
           )

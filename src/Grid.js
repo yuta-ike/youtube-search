@@ -6,39 +6,27 @@ import Grid from '@material-ui/core/Grid';
 const useStyles = makeStyles(theme => ({
   root: {
     flexGrow: 1,
-  },
-  paper: {
-    padding: theme.spacing(1),
-    textAlign: 'center',
-    color: theme.palette.text.secondary,
+    width: '100%',
   },
 }));
 
 export default function _Grid(props) {
   const classes = useStyles();
-  function RowGrid(_props){
-    return (
-      <React.Fragment>
-        {
-          Array(props.col).fill().map((_, i) =>
-            <Grid item xs={12} sm={6} md={3} key={i}>
-              {props.children[_props.rowId * props.col + i]}
-            </Grid>
-          )
-        }
-      </React.Fragment>
-    );
-  }
+  const { children: _children } = props
+  const children = [..._children]
 
   return (
-    <div className={classes.root} style={{ padding: 20 }}>
-      <Grid container spacing={3}>
+    <div className={classes.root} style={{ padding: 0 }}>
+      <Grid className={classes.grid} container spacing={1}>
         {
-          Array(props.row).fill().map((_, i) => (
-            <Grid container spacing={2} style={{ padding: 5 }} key={i}>
-              <RowGrid rowId={i}/>
-            </Grid>
-          ))
+          Array(children.length).fill().map(() => {
+            const child = children.shift()
+            return (
+              <Grid item xs={12} sm={6} md={3} key={child.key}>
+                {child}
+              </Grid>
+            )
+          })
         }
       </Grid>
     </div>

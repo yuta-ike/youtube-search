@@ -13,7 +13,6 @@ const searchVideoWithIndividualData = async (size, startIndex, orderBy/*未対�
     return []
   }
   const result = []
-  console.log(startIndex, startIndex + size)
   await Promise.all(
     user.favorites.slice(startIndex, startIndex + size).map(async favoriteVid => {
       const document = await videodb.doc(favoriteVid).get()

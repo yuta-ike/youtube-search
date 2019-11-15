@@ -4,10 +4,11 @@ import { authenticated, masterAuthenticated } from './firebase/auth.js'
 import urls from './urlManager.js'
 
 export default function Auth(props){
+  const {master, normal, notAuthenticated} = props
   urls[0] = props.location.pathname + props.location.search
   return (
     <div>
-      { masterAuthenticated() ? props.master : authenticated() ? props.normal : props.default }
+      { masterAuthenticated() ? master : authenticated() ? normal : notAuthenticated }
     </div>
   )
 }
