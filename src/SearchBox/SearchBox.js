@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Paper from '@material-ui/core/Paper';
 import InputBase from '@material-ui/core/InputBase';
 import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
+import CloseIcon from '@material-ui/icons/CloseRounded';
 
 export default (useStyles) => function Search(props){
   const classes = useStyles();
@@ -17,6 +17,11 @@ export default (useStyles) => function Search(props){
    props.onClick(word)
   }
 
+  function handleClose(){
+    props.onClose && props.onClose()
+    setWord("")
+  }
+
   return (
     <div className={classes.root}>
       <Paper className={classes.paper}>
@@ -25,10 +30,11 @@ export default (useStyles) => function Search(props){
           placeholder="search videos"
           inputProps={{ 'aria-label': 'SearchVideos' }}
           value={word}
-          onChange={e => handleChange(e)}
+          onChange={handleChange}
+          autoFocus={props.autoFocus}
         />
-        <IconButton className={classes.iconButton} aria-label="Search" onClick={handleClick}>
-          <SearchIcon />
+        <IconButton className={classes.iconButton} aria-label="Search" onClick={handleClose}>
+          <CloseIcon />
         </IconButton>
       </Paper>
     </div>

@@ -10,17 +10,29 @@ import TableRow from '@material-ui/core/TableRow';
 import { getInfo } from './firebase/info.js'
 
 const useStyles = makeStyles(theme => ({
+  root:{
+    [theme.breakpoints.down('sm')]: {
+      margin: theme.spacing(3),
+      marginTop: theme.spacing(4),
+    }
+  },
   title: {
     color: 'black',
-    margin: theme.spacing(4),
+    [theme.breakpoints.up('sm')]: {
+      margin: theme.spacing(4),
+    }
   },
   body:{
     color: 'black',
-    marginLeft: theme.spacing(6),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(6),
+    }
   },
   table:{
     marginTop: theme.spacing(6),
-    marginLeft: theme.spacing(6),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(6),
+    }
   }
 }))
 
@@ -33,7 +45,7 @@ export default function Information(){
   }, [])
 
   return (
-    <React.Fragment>
+    <div className={classes.root}>
       <Typography variant="h4" color="textSecondary" component="h1" className={classes.title}>
         このサービスについて
       </Typography>
@@ -65,6 +77,6 @@ export default function Information(){
           }
         </TableBody>
       </Table>
-    </React.Fragment>
+    </div>
   )
 }

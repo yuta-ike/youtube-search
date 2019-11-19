@@ -13,22 +13,22 @@ const mailTransport = nodemailer.createTransport({
   }
 })
 
-exports.sendMail = functions.https.onCall((data, _) => {
-  let email = {
-    from: emailAddress,
-    to: data.destination,
-    subject: data.subject,
-    text: data.content
-  }
-  mailTransport.sendMail(email, (err, _) => {
-    if (err) {
-      console.log(err)
-      return false
-    }
-    console.log('success')
-    return true
-  })
-})
+// exports.sendMail = functions.https.onCall((data, _) => {
+//   let email = {
+//     from: emailAddress,
+//     to: data.destination,
+//     subject: data.subject,
+//     text: data.content
+//   }
+//   mailTransport.sendMail(email, (err, _) => {
+//     if (err) {
+//       console.log(err)
+//       return false
+//     }
+//     console.log('success')
+//     return true
+//   })
+// })
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions

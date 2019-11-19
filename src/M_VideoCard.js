@@ -24,6 +24,8 @@ import { pushHistory } from './uriChecker.js'
 const useStyles = makeStyles(theme => ({
   card: {
     margin:0,
+    padding:theme.spacing(1),
+    display: "flex",
     width: "100%",
   },
   title: {
@@ -95,49 +97,36 @@ export default withRouter(function VideoCard(props){
 
   return (
     <React.Fragment>
-      <Card className={classes.card} {...props.cardStyle}>
-        <CardMedia>
-          <img width="100%" src={thumbnailSrc}/>
-        </CardMedia>
-        <CardContent>
-          <Typography variant="h6" color="textSecondary" component="h4" className={classes.title}>
-            {!includePath ? (
-              typeof(data.index) === 'number' ? `${data.index}. ${data.title}` : data.title
-            ):(
-              data.title
-            )}
-          </Typography>
-          <Typography variant="body2" color="textSecondary" component="p" className={classes.description} style={{whiteSpace: 'pre-line'}}>
-            <strong>{` ${getDisplayName(data.category)}${data.year != null && (` (${data.year})`) || ''}${data.department != null && (' ' + data.department) || ''} ${data.day != null && (data.day + '日目') || ''}`}</strong>
-            <br/>
-            <strong>{`${data.affiliation != null && data.affiliation || ''}\n`}</strong>
-            {data.description.replace(/\\n/g, '\n')}
-            {/* <br/> */}
-          </Typography>
-        </CardContent>
-        <Divider />
-        <div className={classes.bottom}>
-          <CardActions disableSpacing>
-            <GeneralButton type="favorite" onClick={handleFavorite} value={favorite}/>
-            <GeneralButton type="share" onClick={() => setShareDialogOpen(true)}/>
-            <ShareDialog open={shareDialogOpen} setOpen={setShareDialogOpen} vid={data.vid}/>
-          </CardActions>
-          <Divider />
-          <CardActionArea className={classes.bottomButtonContainer} onClick={handlePlayerOpen}>
-            <Typography variant="body2" color="textSecondary" component="p" className={classes.bottomButton}>
-              {'WATCH ' + '(' + duration + ")"}
+      <Card className={classes.card} {...props.cardStyle} onClick={playerOpen ? handlePlayerClose : handlePlayerOpen}>
+        <React.Fragment>
+          <CardMedia style={{width:"60%"}}>
+            <img src={thumbnailSrc}/>
+          </CardMedia>
+          <CardContent className={classes.content}>
+            <Typography variant="h6" color="textSecondary" component="h4" className={classes.title}>
+              {!includePath ? (
+                typeof(data.index) === 'number' ? `${data.index}. ${data.title}` : data.title
+              ):(
+                data.title
+              )}
             </Typography>
-          </CardActionArea>
-        </div>
+            <Typography variant="body2" color="textSecondary" component="p" className={classes.description} style={{whiteSpace: 'pre-line'}}>
+              <strong>{` ${getDisplayName(data.category)}${data.year != null && (` (${data.year})`) || ''}${data.department != null && (' ' + data.department) || ''} ${data.day != null && (data.day + '日目') || ''}`}</strong>
+              <br/>
+              <strong>{`${data.affiliation != null && data.affiliation || ''}`}</strong>
+              {data.description.replace(/\\n/g, '\n')}
+            </Typography>
+          </CardContent>
+        </React.Fragment>
       </Card>
-      <PlayerDialog
+      <MPlayerDialog
         data={data}
         open={playerOpen}
         handleClose={handlePlayerClose}
         favorite={favorite}
         handleFavorite={handleFavorite}
+        fullscreen={true}
         url={`https://www.youtube.com/watch?v=${data.vid}`}
-        fullscreen={props.playerOpen}
       />
     </React.Fragment>
   )

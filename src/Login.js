@@ -185,7 +185,7 @@ export default function Login(props) {
           isLoading ? (
             <div className={classes.main}>
               <CircularProgress className={classes.progress} />
-              {redirect ? <Redirect to={(console.log(getPath('/main')),getPath('/main'))} /> : null}
+              {redirect ? <Redirect to={getPath('/main')} /> : null}
             </div>
           ):(
             <MuiThemeProvider theme={theme}>

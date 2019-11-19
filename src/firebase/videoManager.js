@@ -82,41 +82,6 @@ export const getVideo = async(type, params) => {
   }
 }
 
-// export const getVideo =
-//   async ({
-//     vId,
-//     conditions,
-//     size=1,
-//     searchType,
-//     startIndex=null,
-//     page=0,
-//     readNextPage=false,
-//     orderBy='index',
-//   }) => {
-//     const getVideo = async ({vId, conditions, size, searchType, page, startIndex, orderBy}) => {
-//       if(vId != null){
-//         return await searchVideoWithVid(vId)
-//       }else if(conditions != null){
-//         if(searchType === 'GENERAL-DATA'){
-//           return await searchVideoWithCategory(conditions, size, startIndex, orderBy)
-//         }else if(searchType === 'INDIVIDUAL-DATA'){
-//           return await searchVideoWithIndividualData(size, page * size)
-//         }else{
-//           console.error('[Searchtype Error]')
-//         }
-//       }else{
-//         console.error('[SearchVideo Error]')
-//       }
-//     }
-//     const videos = await getVideo({vId, conditions, size, searchType, page, startIndex, orderBy})
-//     console.log(videos)
-//     const nextVideos = readNextPage && videos.length > 0 ? await getVideo({vId, conditions, size, searchType, page: page+1, startIndex: videos[videos.length - 1][orderBy], orderBy}) : null
-//     return {
-//       videos,
-//       hasNext: nextVideos != null ? nextVideos.length > 0 : null
-//     }
-//   }
-
 const categoriesTable = {
   'ACCEL PARTY'                : 'accelparty',
   'Double Dutch Contest Japan' : 'ddcj',
@@ -147,9 +112,15 @@ const categoriesTable = {
 const categories = Object.keys(categoriesTable)
 
 const inverseCategoriesTable = Object.entries(categoriesTable).reduce((acc, [k, v]) => Object.assign(acc, {[v]:k}), {})
+
 export const getDisplayName = dbname => {
-  if(dbname in inverseCategoriesTable) return inverseCategoriesTable[dbname]
-  if(dbname instanceof firebase.firestore.Timestamp) return dbname.toDate().toISOString().slice(0,10).replace(/-/g, "/")
+  if(dbname in inverseCategoriesTable)
+      return inverseCategoriesTable[dbname]
+  if(dbname instanceof firebase.firestore.Timestamp)
+      return dbname.toDate().toISOString()
+                            .slice(0,10)
+                            .replace(/-/g, "/")
+                            .replace(/\/\d{2}$/, x => "/" + (Number(x.slice(1)) + 1)) //日付を1増やす
   if(dbname == null) return "その他"
   return dbname
 }
@@ -161,12 +132,12 @@ let algoliaAdminIndex;
 
 export const resetAlgolia = async (algoliaAPIKey) => {
   if(algoliaAdminIndex == null){
-    const algoliaAdminClient = algoliasearch("MTABZ1UNUS", algoliaAPIKey)
+    const algoliaAdminClient = algoliasearch(process.env.REACT_APP_ALGOLIA_APPLICATION_ID, algoliaAPIKey)
     algoliaAdminIndex = algoliaAdminClient.initIndex('videos')
   }
 
   //algoliaのデータをまず削除
-  algoliaAdminIndex.clearIndex()
+  // algoliaAdminIndex.clearIndex()
 
   const query = await videodb/*.where('playlist', '==', 'DDDW2017 novice')*/.get()
   const result = 

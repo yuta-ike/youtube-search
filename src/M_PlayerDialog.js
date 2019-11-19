@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import ReactPlayer from 'react-player';
 import { withRouter } from 'react-router-dom'
+import useLockScroll from './useLockScroll.js';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
 import Button from '@material-ui/core/Button';
 import Dialog from '@material-ui/core/Dialog';
@@ -62,33 +63,61 @@ const useStyles = makeStyles(theme => ({
   contentText:{
     flexGrow: 1,
   },
-  reactPlayer:{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-  },
-  playerWrapper:{
-    position: "relative",
-    paddingTop: "56.25%",
-  },
   dialog:{
     padding: 0,
   },
 
-  modal:{
-    background: "white",
-    fontSize: "1.6rem",
-    width: "100%",
-    justifyContent: "space-between",
-    zIndex: theme.zIndex.drawer,
-    willChange: "transform",
-    borderTopRightRadius: "8px",
-    borderTopLeftRadius: "8px",
-    marginTop: "auto",
-    
-    height: "99%",
-    overflowY: "scroll",
-    transform: "translate3d(0, 0, 0)",
+  "@media screen and (orientation: landscape)":{
+    modal:{
+      background: "white",
+      fontSize: "1.6rem",
+      width: "90%",
+      justifyContent: "space-between",
+      zIndex: theme.zIndex.drawer,
+      willChange: "transform",
+      borderTopRightRadius: "8px",
+      borderTopLeftRadius: "8px",
+      // marginTop: "calc(35px + env(safe-area-inset-top))",//"auto",
+      marginLeft: "env(safe-area-inset-left)",//"auto",
+      marginRight: "env(safe-area-inset-right)",//"auto",
+      height: "100%",
+      overflowY: "hidden",
+      transform: "translate3d(0, 0, 0)",
+    },
+    reactPlayer:{
+      position: 'fixed',
+      maxHeight: "100%",
+      top: 0,
+      left: 0,
+    },
+  },
+  "@media screen and (orientation: portrait)":{
+    modal:{
+      background: "white",
+      fontSize: "1.6rem",
+      width: "100%",
+      justifyContent: "space-between",
+      zIndex: theme.zIndex.drawer,
+      willChange: "transform",
+      borderTopRightRadius: "8px",
+      borderTopLeftRadius: "8px",
+      marginTop: "calc(35px + env(safe-area-inset-top))",//"auto",
+      marginLeft: "env(safe-area-inset-left)",//"auto",
+      marginRight: "env(safe-area-inset-right)",//"auto",
+
+      height: "99%",
+      overflowY: "scroll",
+      transform: "translate3d(0, 0, 0)",
+    },
+    reactPlayer:{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+    },
+  },
+  playerWrapper:{
+    position: "relative",
+    paddingTop: "56.25%",
   },
   modalHandle:{
     position: "sticky",
@@ -101,6 +130,7 @@ const useStyles = makeStyles(theme => ({
   modalContainer:{
     position: "fixed",
     width: "100%",
+    zIndex: theme.zIndex.modal
   },
 
   title: {
@@ -111,25 +141,24 @@ const useStyles = makeStyles(theme => ({
   description:{
     color: "rgb(69,69,69)",
     margin: theme.spacing(2),
-
   },
 
 }));
 
 
-function useLockBodyScroll() {
-  const unlock = () => {
-    document.body.style.overflow = "visible"
-  }
-  const lock = () => {
-    document.body.style.overflow = 'hidden';
-  }
-  useLayoutEffect(() => {
-  //  lock()
-   return unlock
-  }, []); 
-  return [lock, unlock]
-}
+// function useLockBodyScroll() {
+//   const unlock = () => {
+//     document.body.style.overflow = "visible"
+//   }
+//   const lock = () => {
+//     document.body.style.overflow = 'hidden';
+//   }
+//   useLayoutEffect(() => {
+//   //  lock()
+//    return unlock
+//   }, []); 
+//   return [lock, unlock]
+// }
 
 export default withRouter(function PlayerDialog(props) {
   const classes = useStyles();
@@ -139,9 +168,9 @@ export default withRouter(function PlayerDialog(props) {
   const [fullscreen, setFullscreen] = useState(initFullscreen)
   const [success, setSuccess] = useState(true)
 
-  const [lock, unlock] = useLockBodyScroll()
+  // const [lock, unlock] = useLockBodyScroll()
   const close = () => {
-    unlock()
+    // unlock()
     handleClose()
   }
 
@@ -167,6 +196,8 @@ export default withRouter(function PlayerDialog(props) {
   function handleProgress(x){
     setProgress(x.playedSeconds)
   }
+
+  useLockScroll(open)
 
   //たっぷ処理
   const modal = useRef(null)
@@ -207,7 +238,6 @@ export default withRouter(function PlayerDialog(props) {
         onRequestClose={close}
         
         hideBackdrop
-        width="100%"
       >
         <div
           // className={classes.modalHandle}
@@ -234,7 +264,6 @@ export default withRouter(function PlayerDialog(props) {
                     playerVars: {
                       modestbranding: true,
                       start:0,
-                      showinfo: 0,
                     }
                   }
                 }}

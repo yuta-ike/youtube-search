@@ -33,6 +33,7 @@ import TestButton from './TestButton.js'
 import { loginGoogle, logout } from './firebase/auth.js'
 import user from './firebase/user.js'
 import { getInvalidUsers, valifyUser } from './firebase/userManager.js'
+import { pushHistory } from './uriChecker.js'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -230,7 +231,7 @@ export default withRouter(function ManagementPortal(props){
   }
 
   async function handleClickLogout(){
-    props.history.push('/login')
+    pushHistory(props.history, '/login')
     await logout()
   }
 

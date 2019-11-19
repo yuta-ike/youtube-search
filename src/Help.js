@@ -7,20 +7,38 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 
 const useStyles = makeStyles(theme => ({
+  root:{
+    [theme.breakpoints.down('sm')]: {
+      margin: theme.spacing(3),
+      marginTop: theme.spacing(4),
+    }
+  },
   title: {
     color: 'black',
-    margin: theme.spacing(4),
+    marginTop: theme.spacing(5),
+    marginBottom: theme.spacing(2),
+    marginRight: theme.spacing(4),
+    marginLeft: theme.spacing(1),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(4),
+    }
   },
   body:{
     color: 'black',
-    marginLeft: theme.spacing(6),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(6),
+    }
   },
   expansionPanel:{
-    marginLeft: theme.spacing(6),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(6),
+    }
   },
   detail:{
     color: 'black',
-    marginLeft: theme.spacing(2),
+    [theme.breakpoints.up('sm')]: {
+      marginLeft: theme.spacing(6),
+    }
   }
 }))
 
@@ -33,7 +51,7 @@ export default function ManagementPortal(){
   }
 
   return (
-    <React.Fragment>
+    <div className={classes.root}>
       <Typography variant="h4" color="textSecondary" component="h1" className={classes.title}>
         HELP
       </Typography>
@@ -103,6 +121,6 @@ export default function ManagementPortal(){
           </Typography>
         </ExpansionPanelDetails>
       </ExpansionPanel>
-    </React.Fragment>
+    </div>
   )
 }

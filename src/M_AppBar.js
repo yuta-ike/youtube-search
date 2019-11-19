@@ -14,51 +14,49 @@ import FolderIcon from '@material-ui/icons/Folder';
 import { sendMail } from './firebase/functions'
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    display: 'flex',
-    flexGrow: 1,
-  },
-  appBar: {
-    zIndex: 0,
-  },
   menuButton: {
     marginRight: theme.spacing(2),
   },
   title: {
     flexGrow: 1,
   },
-  appBar: {
-    top: 'auto',
-    bottom: 0,
+
+  "@media screen and (orientation: landscape)":{
+    appBar: {
+      display: "none"
+    }
+  },
+  "@media screen and (orientation: portrait)":{
+    appBar: {
+      top: 'auto',
+      bottom: 0,
+      left: 0,
+      width: "100%",
+      zIndex: theme.zIndex.modal + 1,
+      height: "9%",
+    },
   },
   grow: {
     flexGrow: 1,
   },
   fabButton: {
     position: 'absolute',
-    top: -10,
+    top: -5,
     left: 0,
     right: 0,
     margin: '0 auto',
+    fontSize: 50,
     zIndex: theme.zIndex.drawer + 1,
   },
 }));
 
 export default function MyAppBar(props){
   const classes = useStyles()
-  // const { open, setOpen } = props
-
-  // function handleDrawerOpen() {
-  //   setOpen(!open);
-  // }
 
   return (
     // <Slide appear={false} direction="up" in={!props.hide}>
       <AppBar position="fixed" color="primary" className={classes.appBar}>
         <Toolbar>
-          {/* <IconButton edge="start" color="inherit" aria-label="open drawer">
-            <FolderIcon />
-          </IconButton> */}
           {props.right}
           <Fab color="secondary" aria-label="add" className={classes.fabButton} onClick={props.onClickCenter}>
             <FolderIcon />

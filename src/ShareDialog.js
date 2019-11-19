@@ -37,7 +37,7 @@ export default function ShareDialog(props){
 
   return (
     <React.Fragment>
-      <Dialog aria-labelledby="simple-dialog-title" open={props.open} onClick={handleListItemClick}>
+      <Dialog open={props.open} onClick={handleListItemClick}>
         <List>
           <CopyToClipboard text={getUrl()} onCopy={handleCopy}>
             <ListItem button onClick={handleListItemClick}>

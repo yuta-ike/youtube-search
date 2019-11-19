@@ -13,7 +13,7 @@ import UnfoldMoreIcon from '@material-ui/icons/UnfoldMore';
 import UnfoldLessIcon from '@material-ui/icons/UnfoldLess';
 
 import GridPage from './Grid.js'
-import VideoCard from './VideoCard.js'
+import VideoCard from './M_VideoCard.js'
 import ProgressButton from './ProgressButton.js'
 import MenuButton from './MenuButton.js'
 
@@ -100,11 +100,11 @@ export default withRouter(function VideoPage(props){
         onClickBack={back}
         canClickNext={content.hasNext}
         canClickBack={content.hasBack}
-        right={props.type === 'header' && (
-          <IconButton aria-label="open setting" onClick={openPageSetting}>
-            {open ? <UnfoldLessIcon/> : <UnfoldMoreIcon/>}
-          </IconButton>
-        )}
+        // right={props.type === 'header' && (
+        //   <IconButton aria-label="open setting" onClick={openPageSetting}>
+        //     {open ? <UnfoldLessIcon/> : <UnfoldMoreIcon/>}
+        //   </IconButton>
+        // )}
       />
     )
   }

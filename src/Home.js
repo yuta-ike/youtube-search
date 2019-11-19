@@ -107,8 +107,8 @@ export default function Home(props) {
     <div className={classes.root}>
       <AppBar open={open} setOpen={setOpen}>
         <SearchBox onChange={handleSearchBox} onClick={handleSearchBox}/>
-        <NotificationButton />
-        <ExtensionButton />
+        <NotificationButton modalDirection="bottom"/>
+        <ExtensionButton modalDirection="bottom"/>
         <Typography className={classes.uname} variant="body1">
           {name}
         </Typography>

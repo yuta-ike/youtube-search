@@ -300,6 +300,74 @@ const folders = [
         restriction: {category:"nf",},
         children: [
           {
+            displayName:"2019",
+            restriction: {year:2019,},
+            children: [
+              {
+                displayName:"ダブルダッチ",
+                restriction: {department:"ダブルダッチ",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"単縄",
+                restriction: {department:"単縄",},
+                children: [
+                  {
+                    displayName:"1日目",
+                    restriction: {day:1,},
+                    children:null,
+                  },
+                  {
+                    displayName:"2日目",
+                    restriction: {day:2,},
+                    children:null,
+                  },
+                  {
+                    displayName:"3日目",
+                    restriction: {day:3,},
+                    children:null,
+                  },
+                  {
+                    displayName:"4日目",
+                    restriction: {day:4,},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"ステージ",
+                restriction: {department:"ステージ",},
+                children:null,
+              },
+              {
+                displayName:"Finale",
+                restriction: {department:"Finale",},
+                children:null,
+              },
+            ]
+          },
+          {
             displayName:"2018",
             restriction: {year:2018,},
             children: [
@@ -356,13 +424,13 @@ const folders = [
                 ]
               },
               {
-                displayName:"Finale",
-                restriction: {department:"Finale",},
+                displayName:"ステージ",
+                restriction: {department:"ステージ",},
                 children:null,
               },
               {
-                displayName:"ステージ",
-                restriction: {department:"ステージ",},
+                displayName:"Finale",
+                restriction: {department:"Finale",},
                 children:null,
               },
               {
@@ -429,13 +497,13 @@ const folders = [
                 ]
               },
               {
-                displayName:"Finale",
-                restriction: {department:"Finale",},
+                displayName:"ステージ",
+                restriction: {department:"ステージ",},
                 children:null,
               },
               {
-                displayName:"ステージ",
-                restriction: {department:"ステージ",},
+                displayName:"Finale",
+                restriction: {department:"Finale",},
                 children:null,
               },
             ],
@@ -591,6 +659,54 @@ const folders = [
         restriction: {category:"発表会",},
         children: [
           {
+            displayName:"NF",
+            restriction: {department:"nf",},
+            children:[
+              {
+                displayName:"2019",
+                restriction: {year:2019,},
+                children: [
+                  {
+                    displayName:"2019/11/16",
+                    restriction: {originatedDate:time(new Date("2019-11-16")),},
+                    children:null,
+                  },
+                  {
+                    displayName:"2019/11/14",
+                    restriction: {originatedDate:time(new Date("2019-11-14")),},
+                    children:null,
+                  },
+                  {
+                    displayName:"2018/11/12",
+                    restriction: {originatedDate:time(new Date("2019-11-12")),},
+                    children:null,
+                  },
+                ]
+              },
+              {
+                displayName:"2018",
+                restriction: {year:2018,},
+                children: [
+                  {
+                    displayName:"2018/11/17",
+                    restriction: {originatedDate:time(new Date("2018-11-17")),},
+                    children:null,
+                  },
+                  {
+                    displayName:"2018/11/15",
+                    restriction: {originatedDate:time(new Date("2018-11-15")),},
+                    children:null,
+                  },
+                  {
+                    displayName:"2018/11/13",
+                    restriction: {originatedDate:time(new Date("2018-11-13")),},
+                    children:null,
+                  },
+                ]
+              }
+            ]
+          },
+          {
             displayName:"DDDW",
             restriction: {department:"ddd",},
             children: [
@@ -659,27 +775,7 @@ const folders = [
               },
             ],
           },
-          {
-            displayName:"NF",
-            restriction: {department:"nf",},
-            children:[
-              {
-                displayName:"2018/11/17",
-                restriction: {originatedDate:time(new Date("2018-11-17")),},
-                children:null,
-              },
-              {
-                displayName:"2018/11/15",
-                restriction: {originatedDate:time(new Date("2018-11-15")),},
-                children:null,
-              },
-              {
-                displayName:"2018/11/13",
-                restriction: {originatedDate:time(new Date("2018-11-13")),},
-                children:null,
-              },
-            ]
-          },
+          
         ],
       },
       {

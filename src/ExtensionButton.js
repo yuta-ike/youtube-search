@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom'
 
-import SettingsIcon from '@material-ui/icons/Settings'
+import MoreVertIcon from '@material-ui/icons/MoreVert';
 import IconButton from '@material-ui/core/IconButton';
-// import AccountCircle from '@material-ui/icons/AccountCircle'
 import Popover from '@material-ui/core/Popover';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
+import { pushHistory } from './uriChecker.js'
 
 import { store } from './store.js'
 import { logout, hasAdminAuth, hasDeveloperAuth, loginGoogle } from './firebase/auth.js'
@@ -34,33 +34,33 @@ export default withRouter(function ExtensionButton(props){
     setAnchorEl(null)
     switch(type){
       case 'LOGOUT':{
-        props.history.push('/login')
+        pushHistory(props.history, '/login')
         await logout()
       }
       break
       case 'MANAGEMENT_PORTAL':{
         store('MAIN_CONTENT', {type: 'managementportal'})
-        props.history.push('/managementportal')
+        pushHistory(props.history, '/managementportal')
       }
       break;
       case 'SETTINGS':{
         store('MAIN_CONTENT', {type: 'settings'})
-        props.history.push('/settings')
+        pushHistory(props.history, '/settings')
       }
       break
       case 'NOTIFY_PORTAL':{
         store('MAIN_CONTENT', {type: 'notifyportal'})
-        props.history.push('/notifyportal')
+        pushHistory(props.history, '/notifyportal')
       }
       break;
       case 'HELP':{
         store('MAIN_CONTENT', {type: 'help'})
-        props.history.push('/help')
+        pushHistory(props.history, '/help')
       }
       break;
       case 'INFORMATION':{
         store('MAIN_CONTENT', {type: 'information'})
-        props.history.push('/information')
+        pushHistory(props.history, '/information')
       }
       break
     }
@@ -75,15 +75,15 @@ export default withRouter(function ExtensionButton(props){
           color="inherit"
           onClick={handleClick}
         >
-        <SettingsIcon />
+        <MoreVertIcon />
       </IconButton>
       <Popover
         id="simple-menu"
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
         onClose={handleMenu}
-        anchorOrigin={{vertical: 'bottom', horizontal: 'center'}}
-        transformOrigin={{vertical: 'top', horizontal: 'center'}}
+        anchorOrigin={{vertical: props.modalDirection == 'bottom' ? 'bottom' : 'top', horizontal: 'center'}}
+        transformOrigin={{vertical:props.modalDirection == 'bottom' ? 'top' : 'bottom', horizontal: 'center'}}
       >
         {
           hasAdminAuth() ?

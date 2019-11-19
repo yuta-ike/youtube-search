@@ -1,22 +1,31 @@
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { makeStyles, withStyles } from '@material-ui/core/styles';
-// import Drawer from '@material-ui/core/Drawer';
-// import SwipeableDrawer from '@material-ui/core/SwipeableDrawer';
-import Drawer from 'react-drag-drawer'
+// import Dialog from '@material-ui/core/Dialog';
+import Slide from '@material-ui/core/Slide';
+import Drawer from '@material-ui/core/Drawer';
+// import Drawer from 'react-drag-drawer'
 import Paper from '@material-ui/core/Paper';
 import Divider from '@material-ui/core/Divider';
-
 import FolderHierarchy from './FolderHierarchy.js'
 import mainFolderStructurePromise from './mainFolderStructure.js'
 import subFolderStructure from './subFolderStructure.js'
 import { store } from './store.js'
 import { pageData } from './action.js'
+import useLockScroll from './useLockScroll.js';
 
 const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexGrow: 1,
   },
+
+  //横向きでは非表示
+  "@media screen and (orientation: landscape)":{
+    modal:{
+      display:"none",
+    },
+  },
+  
   menuButton: {
     marginRight: theme.spacing(2),
   },
@@ -32,133 +41,85 @@ const useStyles = makeStyles(theme => ({
     marginBottom: '-12px'
   },
   modal:{
-    background: "white",
     fontSize: "1.6rem",
-    width: "97%",
+    width: "100%",
+    height: "100%",
     justifyContent: "space-between",
     zIndex: theme.zIndex.drawer,
-    willChange: "transform",
-    borderTopRightRadius: "8px",
-    borderTopLeftRadius: "8px",
-    marginTop: "auto",
-    paddingBottom: 100,
-    height: "80%",
     overflowY: "scroll",
   },
-  modalHandle:{
-    position: "sticky",
-    top: 0,
-    background: "black",
-    width: "auto",
-    height: "2rem",
-    zIndex: 20,
+  // modalHandle:{
+  //   position: "sticky",
+  //   top: 0,
+  //   background: "black",
+  //   width: "auto",
+  //   height: "2rem",
+  //   zIndex: 20,
+  // },
+  drawerContent:{
+    margin: theme.spacing(2),
+    marginBottom: "40%"
   },
-  modalContainer:{
-    position: "fixed",
-    width: "100%",
+  dummy: {
+    height: "1%",
   }
 }));
-
-// function useLockBodyScroll() {
-//   const unlock = () => {
-//     document.body.style.overflow = "visible"
-//   }
-//   const lock = () => {
-//     document.body.style.overflow = 'hidden';
-//   }
-//   useLayoutEffect(() => {
-//    lock()
-//    return unlock
-//   }, []); 
-//   return [lock, unlock]
-// }
 
 export default function SideDrawer(props){
   const classes = useStyles();
   const { open, setOpen } = props
+
   const [mainFolderStructure, setMainFolderStructure] = useState([])
   mainFolderStructurePromise.then(value => setMainFolderStructure(value))
   const [selected, setSelected] = useState(null)
 
-  // const [lock, unlock] = useLockBodyScroll()
   const close = () => {
     setOpen(false)
-  //   unlock()
   }
 
+  const prevent = e => e.preventDefault
+  useEffect(() => {
+    document.addEventListener('touchmove', prevent , {passive:true})
+  })
 
-  //たっぷ処理
-  // const modal = useRef(null)
-  // const step = useRef("50%")
-  // const dragStart = useRef(0)
-  // const [dontApplyListeners, setDontApplyListeners] = useState(false)
-  // useEffect(() => console.log(dontApplyListeners), [dontApplyListeners])
-  const handleTouchDown = e => {
-    // dragStart.current = e.changedTouches[0].pageY
-    // setDontApplyListeners(false)
-  }
-  const handleTouchMove = e =>{
-    // if(step.current === "50%"){
-    //   const delta = Math.round(e.changedTouches[0].pageY - dragStart.current)
-    //   modal.current.style.height = `calc(${step.current} - ${delta}px)`
-    // }
-  }
-  const handleTouchUp = e => {
-    // if(e.changedTouches[0].pageY / window.outerHeight > 0.6){
-    //   close()
-    // }else if(e.changedTouches[0].pageY / window.outerHeight > 0.3){
-    //   step.current = "50%"
-    // }else{
-    //   step.current = "90%"
-    // }
-    // modal.current.style.height = step.current
-    // setDontApplyListeners(true)
-  }
 
+  const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="up" ref={ref} {...props} />;
+  });
   return (
-    <div>
-    <Drawer
-      className={classes.modal}
-      open={open}
-      direction='bottom'
-      modalElementClass={classes.modal}
-      containerElementClass={classes.modalContainer}
-      // getModalRef={element => modal.current = element}
-      hideBackdrop
-      onRequestClose={close}
-      // allowClose={false}
-      dontApplyListeners={true}
-      width="100%"
-    >
-      {/* <div
-        className={classes.modalHandle}
-        onTouchStart={handleTouchDown}
-        onTouchEnd={handleTouchUp}
-        onTouchCancel={handleTouchUp}
-        onTouchMove={handleTouchMove}
-      /> */}
-      <FolderHierarchy
-        folderStructure={subFolderStructure}
-        onClickFile={(_, hierarchy) =>{
-          props.handleHierarchyList(hierarchy)
-          store('PAGE_DATA', pageData(hierarchy, 'SUB_FOLDER'))
-          close()
-          window.scrollTo(0, 0, "smooth")
+    <div className={classes.root}>
+      <Drawer
+        open={open}
+        anchor='bottom'
+        className={classes.modal}
+        onClose={close}
+        PaperProps={{
+          style:{
+            position: "fixed",
+            height: "83%",
+            margin: 0,
+            marginLeft: "2.5%",
+            marginRight: "2.5%",
+            bottom: 0,
+            borderRadius: "8px",
+          },
         }}
-        properties={{selected, setSelected}}
-      />
-      <Divider />
-      <FolderHierarchy
-        folderStructure={mainFolderStructure}
-        onClickFile={(_, hierarchy) => {
-          props.handleHierarchyList(hierarchy)
-          store('PAGE_DATA', pageData(hierarchy, 'MAIN_FOLDER'))
-          setOpen(false)
-          window.scrollTo(0, 0, "smooth")
-        }}
-        properties={{selected, setSelected}}
-      />
-    </Drawer>
+      >
+        <div className={classes.drawerContent}>
+          <FolderHierarchy
+            folderStructure={mainFolderStructure}
+            onClickFile={(_, hierarchy) => {
+              props.handleHierarchyList(hierarchy)
+              store('PAGE_DATA', pageData(hierarchy, 'MAIN_FOLDER'))
+              close()
+              window.scrollTo(0, 0, "smooth")
+              document.removeEventListener('touchmove', (e) => e.preventDefault, {passive:true})
+            }}
+            properties={{selected, setSelected}}
+          />
+        </div>
+        <div className={classes.dummy}/>
+      </Drawer>
     </div>
   )
 }

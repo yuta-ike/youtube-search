@@ -18,6 +18,7 @@ const useStyles = makeStyles(theme => ({
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
+    maxHeight: '68px'
   },
   menuButton: {
     marginRight: theme.spacing(2),

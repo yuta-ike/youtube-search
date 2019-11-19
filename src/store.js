@@ -1,5 +1,6 @@
 import { getVideo } from './firebase/videoManager.js'
 import { localStorageTable } from './localStorageManager.js'
+import SearchBox from './SearchBox/SearchBox.js'
 
 let events = {}
 
@@ -10,6 +11,9 @@ let prevStates = {
   INCLUDE_PATH:{
     payload:{}
   },
+  FILE_SEARCH:{
+    payload:{}
+  }
 }
 
 const currState = {}
@@ -107,12 +111,12 @@ export const store = async (name, _currState) => {
       const query = currPayload.query
       const size = localStorageTable["NUM-Of-ITEMS-PER-PAGE"]
 
-      const getVideoFunc = async(pageNum) => await getVideo(prevPayload.searchType, {query, page:pageNum, size})
+      const getVideoFunc = async(pageNum) => await getVideo(currPayload.searchType, {query, page:pageNum, size})
       
       const { videos, nbPages } = await getVideoFunc(0)
 
       prevStates[name] = {
-        ...prevPayload,
+        ...currPayload,
         getVideoFunc,
         pageNum: 0,
         pages: nbPages > 1 ? [videos] : [videos, null],
