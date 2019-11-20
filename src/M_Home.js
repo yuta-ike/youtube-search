@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
 import FolderSpecialIcon from '@material-ui/icons/FolderSpecialOutlined';
@@ -8,8 +9,8 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import ScreenRotationIcon from '@material-ui/icons/ScreenRotation';
 import GetAppIcon from '@material-ui/icons/GetApp';
+import HistoryIcon from '@material-ui/icons/HistoryRounded';
 import clsx from 'clsx';
-import React, { useState } from 'react';
 import { pageDataSearch } from './action.js';
 import ExtensionButton from './ExtensionButton.js';
 import { getName, onAuthStateChanged } from './firebase/auth.js';
@@ -66,10 +67,15 @@ const useStyles = makeStyles(theme => ({
 }));
 
 let initialized = false
+let first = true
 
 export default function Home(props) {
   const classes = useStyles()
-  const [open, setOpen] = useState(true)
+  const [open, setOpen] = useState(false)
+  useEffect(() => {
+    first && setOpen(true)
+    first = false
+  })
   const [mainContent, setMainContent] = useState("")
 
   if(!initialized){
@@ -94,7 +100,7 @@ export default function Home(props) {
     }
     initialized = true
   }
-  
+
 
   function handleHierarchyList(arr){
     store('MAIN_CONTENT', {type: 'MAIN_PAGE'})
@@ -125,9 +131,9 @@ export default function Home(props) {
   }
 
   //ここ共通化する
-  const handleClickFavorite = () => {
-    handleHierarchyList({category:"favorite"})
-    store('PAGE_DATA', pageData({category: "favorite"}, 'SUB_FOLDER'))
+  const handleClickMenuItem = key => () => {
+    handleHierarchyList({category:key})
+    store('PAGE_DATA', pageData({category: key}, 'SUB_FOLDER'))
     window.scrollTo(0, 0, "smooth")
     setOpen(false)
     setSearchMode(false)
@@ -207,13 +213,22 @@ export default function Home(props) {
         <AppBar
           onClickCenter={handleFolderOpen}
           right={
-            <ExtensionButton modalDirection="top"/>
+            <React.Fragment>
+              <ExtensionButton modalDirection="top"/>
+              <IconButton
+                color="inherit"
+                onClick={handleClickMenuItem("history")}
+                style={{margin: '0 5px'}}
+              >
+                <HistoryIcon className={classes.icon}/>
+               </IconButton>
+              </React.Fragment>
           }
           left={
             <React.Fragment>
               <IconButton
                 color="inherit"
-                onClick={handleClickFavorite}
+                onClick={handleClickMenuItem("favorite")}
                 style={{margin: '0 5px'}}
               >
                 <FolderSpecialIcon className={classes.icon}/>

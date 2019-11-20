@@ -667,6 +667,11 @@ const folders = [
                 restriction: {year:2019,},
                 children: [
                   {
+                    displayName:"2019/11/19",
+                    restriction: {originatedDate:time(new Date("2019-11-19")),},
+                    children:null,
+                  },
+                  {
                     displayName:"2019/11/16",
                     restriction: {originatedDate:time(new Date("2019-11-16")),},
                     children:null,

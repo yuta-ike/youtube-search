@@ -16,6 +16,7 @@ import IconButton from '@material-ui/core/IconButton';
 import GeneralButton from './GeneralButton.js'
 import ShareDialog from './ShareDialog.js'
 import Slider from './Slider.js';
+import { push as pushWatchList } from './firebase/watchList.js'
 
 const styles = theme => ({
   root: {
@@ -98,6 +99,11 @@ export default withRouter(function PlayerDialog(props) {
   }
 
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
+
+  const onVideoStart = () => {
+    pushWatchList(data.vid)
+  }
+
   return (
       <Dialog
         fullWidth
@@ -123,6 +129,7 @@ export default withRouter(function PlayerDialog(props) {
               playing
               controls
               loop
+              onStart={onVideoStart}
               onError={handleAuthError}
               config={{
                 youtube: {

@@ -8,13 +8,14 @@ import {upload as uploadThumbnail} from './thumbnail.js'
 const algoliaClient = algoliasearch(process.env.REACT_APP_ALGOLIA_APPLICATION_ID,  process.env.REACT_APP_ALGOLIA_SEARCH_API_KEY)
 const algoliaIndex = algoliaClient.initIndex('videos')
 
-const searchVideoWithIndividualData = async (size, startIndex, orderBy/*未対応*/) => {
+const searchVideoWithIndividualData = async (category, size, startIndex, orderBy/*未対応*/) => {
   if(!user.loggedIn){
     return []
   }
+  const key = category == 'history' ? 'watchList' : 'favorites'
   const result = []
   await Promise.all(
-    user.favorites.slice(startIndex, startIndex + size).map(async favoriteVid => {
+    user[key].slice(startIndex, startIndex + size).map(async favoriteVid => {
       const document = await videodb.doc(favoriteVid).get()
       result.push(Object.assign(document.data(), {vid:favoriteVid}))
     })
@@ -54,11 +55,11 @@ export const getVideo = async(type, params) => {
       hasNext: nextVideos != null ? nextVideos.length > 0 : false
     }
   }else if(type === 'PERSONIZED-SEARCH'){
-    const { size: _size, startIndex: _startIndex, orderBy } = params
+    const { conditions, size: _size, startIndex: _startIndex, orderBy } = params
     const startIndex = _startIndex == null ? 0 : Number(_startIndex)
     const size = Number(_size)
-    const videos = await searchVideoWithIndividualData(size, startIndex , orderBy)
-    const nextVideos = videos.length > 0 ? await searchVideoWithIndividualData(size, startIndex + size, orderBy)  : null
+    const videos = await searchVideoWithIndividualData(conditions.category, size, startIndex , orderBy)
+    const nextVideos = videos.length > 0 ? await searchVideoWithIndividualData(conditions.category, size, startIndex + size, orderBy)  : null
     return {
       videos,
       hasNext: nextVideos != null ? nextVideos.length > 0 : false

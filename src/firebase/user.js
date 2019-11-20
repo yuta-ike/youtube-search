@@ -6,6 +6,7 @@ const emptyUser = {
   uname: "",
   token: null,
   favorites: [],
+  watchList: [],
   valid: false,
   settings:{
     itemsPerRow: 4,
@@ -14,7 +15,7 @@ const emptyUser = {
   }
 }
 
-const databaseKey = ['accountType', 'uname', 'favorites', 'valid', 'settings']
+const databaseKey = ['accountType', 'uname', 'favorites', 'watchList', 'valid', 'settings']
 
 const user = new class User{
   constructor(){

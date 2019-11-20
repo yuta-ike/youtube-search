@@ -15,11 +15,14 @@ import FullscreenExitIcon from '@material-ui/icons/FullscreenExit';
 import IconButton from '@material-ui/core/IconButton';
 import Drawer from 'react-drag-drawer'
 import Typography from '@material-ui/core/Typography';
-import { getDisplayName } from './firebase/videoManager.js'
 
 import GeneralButton from './GeneralButton.js'
 import ShareDialog from './ShareDialog.js'
 import Slider from './Slider.js';
+
+import { getDisplayName } from './firebase/videoManager.js'
+import { store } from './store.js'
+import { push as pushWatchList } from './firebase/watchList.js'
 
 const styles = theme => ({
   root: {
@@ -222,6 +225,10 @@ export default withRouter(function PlayerDialog(props) {
     // modal.current.style.height = step.current
   }
 
+  const onVideoStart = () => {
+    pushWatchList(data.vid)
+  }
+
   const [shareDialogOpen, setShareDialogOpen] = useState(false)
   return (
       <Drawer
@@ -258,6 +265,7 @@ export default withRouter(function PlayerDialog(props) {
                 controls
                 loop
                 pip
+                onStart={onVideoStart}
                 onError={handleAuthError}
                 config={{
                   youtube: {

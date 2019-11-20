@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { withRouter } from 'react-router-dom'
 
@@ -8,8 +8,9 @@ import Popover from '@material-ui/core/Popover';
 import MenuItem from '@material-ui/core/MenuItem';
 import Divider from '@material-ui/core/Divider';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { pushHistory } from './uriChecker.js'
+import RefreshIcon from '@material-ui/icons/RefreshOutlined';
 
+import { pushHistory } from './uriChecker.js'
 import { store } from './store.js'
 import { logout, hasAdminAuth, hasDeveloperAuth, loginGoogle } from './firebase/auth.js'
 
@@ -25,13 +26,15 @@ const useStyles = makeStyles(theme => ({
 export default withRouter(function ExtensionButton(props){
   const classes = useStyles()
 
-  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [open, setOpen] = useState(false)
   function handleClick(event) {
+    setOpen(!open)
     setAnchorEl(event.currentTarget);
   }
 
   async function handleMenu(type) {
-    setAnchorEl(null)
+    setOpen(false)
     switch(type){
       case 'LOGOUT':{
         pushHistory(props.history, '/login')
@@ -69,7 +72,7 @@ export default withRouter(function ExtensionButton(props){
   return (
     <React.Fragment>
       <IconButton
-          edge="end"
+          // edge="end"
           aria-label="Account of current user"
           aria-haspopup="true"
           color="inherit"
@@ -78,9 +81,9 @@ export default withRouter(function ExtensionButton(props){
         <MoreVertIcon />
       </IconButton>
       <Popover
-        id="simple-menu"
+        className={classes.modal}
         anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
+        open={open}
         onClose={handleMenu}
         anchorOrigin={{vertical: props.modalDirection == 'bottom' ? 'bottom' : 'top', horizontal: 'center'}}
         transformOrigin={{vertical:props.modalDirection == 'bottom' ? 'top' : 'bottom', horizontal: 'center'}}
@@ -98,13 +101,17 @@ export default withRouter(function ExtensionButton(props){
         {
           hasAdminAuth() ? <Divider /> : null
         }
-        <MenuItem className={classes.menuItems} onClick={e => handleMenu('SETTINGS',e)}>Account</MenuItem>
-        <MenuItem className={classes.menuItems} onClick={e => handleMenu('HELP',e)}>Help</MenuItem>
-        <MenuItem className={classes.menuItems} onClick={e => handleMenu('INFORMATION',e)}>Infomation</MenuItem>
+        <MenuItem className={classes.menuItems} onClick={e => handleMenu('SETTINGS',e)}>アカウント</MenuItem>
+        <MenuItem className={classes.menuItems} onClick={e => handleMenu('INFORMATION',e)}>このサービスについて</MenuItem>
+        <MenuItem className={classes.menuItems} onClick={e => handleMenu('HELP',e)}>ヘルプ</MenuItem>
         <Divider />
+        <MenuItem className={classes.menuItems} onClick={() => window.location.reload(true)}>
+          <RefreshIcon className={classes.icon}/>
+          リロード
+        </MenuItem>
         <MenuItem className={classes.menuItems} onClick={e => handleMenu('LOGOUT', e)}>
           <ExitToAppIcon className={classes.exitIcon}/>
-          Logout
+          ログアウト
         </MenuItem>
       </Popover>
     </React.Fragment>
